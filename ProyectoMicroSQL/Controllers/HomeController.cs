@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ProyectoMicroSQL.Models;
+using ProyectoMicroSQL.Singleton;
 
 namespace ProyectoMicroSQL.Controllers
 {
@@ -13,18 +15,59 @@ namespace ProyectoMicroSQL.Controllers
             return View();
         }
 
-        public ActionResult About()
+        static int contador = 0;
+        public ActionResult Carga()
         {
-            ViewBag.Message = "Your application description page.";
-
+            if (contador > 0)
+            {
+                ViewBag.Msg = "ERROR AL CARGAR EL ARCHIVO, INTENTE DE NUEVO";
+            }
+            contador++;
             return View();
         }
 
-        public ActionResult Contact()
+        [HttpPost]
+        public ActionResult Carga(HttpPostedFileBase file)
         {
-            ViewBag.Message = "Your contact page.";
+            if (file != null)
+            {
+                Upload(file);
+                return RedirectToAction("Upload");
 
+            }
+            else
+            {
+                ViewBag.Msg = "ERROR AL CARGAR EL ARCHIVO, INTENTE DE NUEVO";
+                return View();
+            }
+        }
+
+        public ActionResult Upload (HttpPostedFileBase file)
+        {
+            string model = "";
+            if (file != null && file.ContentLength > 0)
+            {
+                model = Server.MapPath("~/Upload/") + file.FileName;
+                file.SaveAs(model);
+                Data.Instancia.LecturaCSV(model);
+                ViewBag.Msg = "Carga del archivo correcta";
+                return RedirectToAction("Menu"); //VERIFICAR
+            }
+            else
+            {
+                ViewBag.Msg = "ARCHIVO SIN CONTENIDO";
+                return RedirectToAction("Carga");
+            }
+        }
+
+        public ActionResult Menu()
+        {
             return View();
+        }
+
+        public ActionResult Personalizar()
+        {
+            return 
         }
     }
 }

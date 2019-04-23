@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Menu";
+}
+
+<h2>Menu principal SQL</h2>
+
+<h4>CODIGO SQL</h4>
+
+<h4>GRID</h4>
+
+<h4>VER RESULTADOS</h4>
+
+<h4>PERSONALIZAR DICCIONARIO</h4>
+<ul>
+    @using (Html.BeginForm("", "Home", FormMethod.Post))
+    {
+        <input type="file" value="Personalizar"/>
+    }
+</ul>
+
+<h4>REESTABLECER DICCIONARIO</h4>
+
