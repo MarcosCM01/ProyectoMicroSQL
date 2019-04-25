@@ -61,6 +61,7 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Menu()
         {
+            ViewBag.Mensaje = "";
             return View();
         }
 
@@ -83,6 +84,7 @@ namespace ProyectoMicroSQL.Controllers
         public ActionResult Reestablecer()
         {
             Data.Instancia.Reestablecer();
+            ViewBag.Mensaje = "Restablecimiento completado";
             return View("Menu");
         }
     }
