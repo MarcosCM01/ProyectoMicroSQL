@@ -14,6 +14,11 @@ namespace ProyectoMicroSQL.Controllers
             return View();
         }
 
+        public ActionResult CodigoSQL()
+        {
+            return View();
+        }
+
         static int contador = 0;
         public ActionResult Carga()
         {
@@ -72,13 +77,23 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Modificar(string NewWord)
         {
-            string[] array = NewWord.Split(',');
-            string key = array[0].Trim();
-            string value = array[1].Trim();
+            try
+            {
+                ViewBag.Error = "";
+                string[] array = NewWord.Split(',');
+                string key = array[0].Trim();
+                string value = array[1].Trim();
 
-            Data.Instancia.Dictionary[key] = value;
+                Data.Instancia.Dictionary[key] = value;
 
-            return View("Personalizar");
+                return View("Personalizar");
+            }
+            catch
+            {
+                ViewBag.Error = "Mala escritura";
+                return View("Personalizar");
+            }
+            
         }
 
         public ActionResult Reestablecer()

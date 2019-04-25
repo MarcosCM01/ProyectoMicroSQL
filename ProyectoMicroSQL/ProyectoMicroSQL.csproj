@@ -172,6 +172,7 @@
     <Content Include="Views\Home\Carga.cshtml" />
     <Content Include="Views\Home\Menu.cshtml" />
     <Content Include="Views\Home\Personalizar.cshtml" />
+    <Content Include="Views\Home\CodigoSQL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

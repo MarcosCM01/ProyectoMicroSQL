@@ -3,11 +3,12 @@
     ViewBag.Title = "Personalizar";
 }
 
-<h2>PersonalizarDiccionario</h2>
+<h2>Personalizar Diccionario</h2>
 
 <p>
     @Html.ActionLink("Regresar a Menu Principal", "Menu")
 </p>
+<p>@ViewBag.Error</p>
 <ul>
     @using (Html.BeginForm("Modificar", "Home", FormMethod.Post))
     {
