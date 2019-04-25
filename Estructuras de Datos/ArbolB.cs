@@ -217,6 +217,7 @@ namespace Estructuras_de_Datos
                 {
                     BEncontrado = true;
                     val = item;
+                    break;
                 }
             }
 
@@ -235,6 +236,41 @@ namespace Estructuras_de_Datos
                 return val;
             }
 
+        }
+
+        public void Eliminar(T valor, NodoB<T> Nodo)
+        {
+            bool BEncontrado = false;
+            int indice = 0;
+            for (int i = 0; i < Nodo.Valores.Count; i++)
+            {
+                if(Nodo.Valores[i].CompareTo(valor) == 0)
+                {
+                    BEncontrado = true;
+                    indice = i;
+                    break;
+                }
+            }
+
+
+            if (BEncontrado == false && Nodo.Hijos.Count > 0)
+            {
+                NodoB<T> NodoHijo = new NodoB<T>();
+                NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)];
+                Busqueda(valor, NodoHijo);
+            }
+            else if (BEncontrado == false && Nodo.Hijos.Count == 0)
+            {
+                throw new NotImplementedException();
+            }
+            else if(BEncontrado == true && Nodo.Hijos.Count == 0) //Cuando el valor esta en una hoja
+            {
+                Nodo.Valores.RemoveAt(indice);
+            }
+            else if (BEncontrado == true && Nodo.Hijos.Count > 0) //Cuando el valor esta en una hoja
+            {
+                //ELIMINACION DE VALOR CON HIJOS
+            }
         }
 
 

@@ -73,8 +73,8 @@ namespace ProyectoMicroSQL.Controllers
         public ActionResult Modificar(string NewWord)
         {
             string[] array = NewWord.Split(',');
-            string key = array[0];
-            string value = array[1];
+            string key = array[0].Trim();
+            string value = array[1].Trim();
 
             Data.Instancia.Dictionary[key] = value;
 
