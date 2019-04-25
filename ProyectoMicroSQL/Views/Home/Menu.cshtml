@@ -12,12 +12,9 @@
 <h4>VER RESULTADOS</h4>
 
 <h4>PERSONALIZAR DICCIONARIO</h4>
-<ul>
-    @using (Html.BeginForm("", "Home", FormMethod.Post))
-    {
-        <input type="file" value="Personalizar"/>
-    }
-</ul>
+<button type="button" onclick="location.href= '@Url.Action("Personalizar","Home")'">PERSONALIZAR DICCIONARIO </button>
+
 
 <h4>REESTABLECER DICCIONARIO</h4>
+<button type="button" onclick="location.href= '@Url.Action("Reestablecer","Home")'">REESTABLECER DICCIONARIO </button>
 

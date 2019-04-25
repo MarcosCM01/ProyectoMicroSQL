@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ProyectoMicroSQL.Models;
 using ProyectoMicroSQL.Singleton;
 
 namespace ProyectoMicroSQL.Controllers
@@ -67,7 +66,24 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Personalizar()
         {
-            return 
+            return View(Data.Instancia.Dictionary);
+        }
+
+        public ActionResult Modificar(string NewWord)
+        {
+            string[] array = NewWord.Split(',');
+            string key = array[0];
+            string value = array[1];
+
+            Data.Instancia.Dictionary[key] = value;
+
+            return View("Personalizar");
+        }
+
+        public ActionResult Reestablecer()
+        {
+            Data.Instancia.Reestablecer();
+            return View("Menu");
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
-using ProyectoMicroSQL.Models;
 
 namespace ProyectoMicroSQL.Singleton
 {
@@ -22,8 +21,9 @@ namespace ProyectoMicroSQL.Singleton
             }
         }
 
-        public Dictionary<string, List<string>> Dictionary = new Dictionary<string, List<string>>();
-        public List<string> auxDictionaries = new List<string>();
+        public Dictionary<string, string> Dictionary = new Dictionary<string, string>();
+        public List<string> ListaV = new List<string>();
+        public List<string> ListaK = new List<string>();
 
         public void LecturaCSV(string path)
         {
@@ -34,17 +34,25 @@ namespace ProyectoMicroSQL.Singleton
                 if (contador > 0)
                 {
                     string[] infolinea = item.Split(';');
-                    for (int i = 1; i < infolinea.Length; i++)
-                    {
-                        auxDictionaries.Add(infolinea[i]);
-                    }
-                    Dictionary.Add(infolinea[0], auxDictionaries);
+                    
+                    Dictionary.Add(infolinea[0], infolinea[1]);
+                    ListaK.Add(infolinea[0]);
+                    ListaV.Add(infolinea[1]);
                 }
                 else
                 {
                     contador++;
                 }
             }
+        }
+        public void Reestablecer()
+        {
+            for (int i = 0; i < ListaV.Count; i++)
+            {
+                Dictionary[ListaK[i]] = ListaV[i];
+              
+            }
+            
         }
     }
 }
