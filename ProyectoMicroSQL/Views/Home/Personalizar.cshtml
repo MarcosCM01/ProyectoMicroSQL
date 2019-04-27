@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Personalizar";
+}
+
+<h2>Personalizar Diccionario</h2>
+
+<p>
+    @Html.ActionLink("Regresar a Menu Principal", "Menu")
+</p>
+<p>@ViewBag.Error</p>
+<ul>
+    @using (Html.BeginForm("Modificar", "Home", FormMethod.Post))
+    {
+        <input type="text" name="NewWord" id="NewWord" />
+        <input type="submit" value="Modificar" class="btn btn-outline-success" />
+    }
+</ul>
+<table class="table table-hover">
+    <tr class="table">
+        <th>
+            PALABRA RESERVADA
+        </th>
+        <th>
+            PALABRA AUX
+        </th>
+        
+    </tr>
+
+    @foreach(var item in ProyectoMicroSQL.Singleton.Data.Instancia.Dictionary)
+    {
+    <tr class="table">
+        <td>
+            @Html.DisplayFor(modelItem => item.Key)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Value)
+        </td>
+        
+    </tr>
+    }
+</table>
