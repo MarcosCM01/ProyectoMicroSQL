@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoMicroSQL", "ProyectoMicroSQL\ProyectoMicroSQL.csproj", "{C83D8066-2CF4-4E5F-B37A-D2876F5961D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Estructuras de Datos", "Estructuras de Datos\Estructuras de Datos.csproj", "{E21E9D77-60E4-4FC0-8595-C69B0F557378}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C83D8066-2CF4-4E5F-B37A-D2876F5961D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C83D8066-2CF4-4E5F-B37A-D2876F5961D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C83D8066-2CF4-4E5F-B37A-D2876F5961D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C83D8066-2CF4-4E5F-B37A-D2876F5961D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E21E9D77-60E4-4FC0-8595-C69B0F557378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E21E9D77-60E4-4FC0-8595-C69B0F557378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E21E9D77-60E4-4FC0-8595-C69B0F557378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E21E9D77-60E4-4FC0-8595-C69B0F557378}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D382D6BE-BAB8-4900-8F38-0CE5EAF2FE57}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "Menu";
+}
+
+<h2>Menu principal MicroSQL</h2>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Código SQL</h2>
+    <h4 class="display-3"> Ingrese al cuadro de comandos para crear, eliminar, agregar datos</h4>
+    <p class="lead">
+
+        <h4>CODIGO SQL</h4>
+        <h4><button type="button" onclick="location.href= '@Url.Action("CodigoSQL","Home")'">CODIGO SQL </button></h4>
+
+    </p>
+    <h6>@ViewBag.Msg</h6>
+</div>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Grid</h2>
+    <h4 class="display-3"> Vea las tablas creadas por usted de manera ordeada</h4>
+    <p class="lead">
+
+        <h4>GRID</h4>
+
+    </p>
+    <h6>@ViewBag.Msg</h6>
+</div>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Resultados</h2>
+    <h4 class="display-3"> Vea los resultados de sus datos</h4>
+    <p class="lead">
+
+        <h4>VER RESULTADOS</h4>
+
+    </p>
+    <h6>@ViewBag.Msg</h6>
+</div>
+
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Personalización de otro idioma</h2>
+    <h4 class="display-3"> Modifique las palabras reservadas a otro idioma</h4>
+    <p class="lead">
+
+        <h4><button type="button" onclick="location.href= '@Url.Action("Personalizar","Home")'">PERSONALIZAR DICCIONARIO </button></h4>
+
+    </p>
+    <h6>@ViewBag.Msg</h6>
+</div>
+
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Reestablecimiento de idiomas predeterminados</h2>
+    <h4 class="display-3"> Si desea reestablecer las palabras reservadas a como estaba predeterminadamente, haga click en esta opción</h4>
+    <p class="lead">
+
+        <h4><button type="button" onclick="location.href= '@Url.Action("Reestablecer","Home")'">REESTABLECER DICCIONARIO </button></h4>
+    <p>@ViewBag.Mensaje</p>
+
+    </p>
+    <h6>@ViewBag.Msg</h6>
+</div>
+
