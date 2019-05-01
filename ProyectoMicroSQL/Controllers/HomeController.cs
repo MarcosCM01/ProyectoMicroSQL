@@ -14,6 +14,17 @@ namespace ProyectoMicroSQL.Controllers
             return View();
         }
 
+        public ActionResult CargarTablas()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CargarTablas(HttpPostedFileBase file)
+        {
+            return View();
+        }
+
         public ActionResult CodigoSQL()
         {
             return View();
