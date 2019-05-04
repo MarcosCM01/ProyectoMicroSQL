@@ -10,11 +10,11 @@ namespace Estructuras_de_Datos
     public class ArbolB<T> : IEnumerable<T> where T : IComparable
     {
         public NodoB<T> Raiz { get; set; }
-
+        public int siguienteposicion { get; set; }
         public ArbolB()
         {
             Raiz = null;
-
+            siguienteposicion = 2;
         }
 
 
@@ -73,11 +73,13 @@ namespace Estructuras_de_Datos
             }
         }
 
+
         public void CreandoNodo(NodoB<T> nuevo, NodoB<T> nodo)
         {
             nuevo.max = nodo.max;
             nuevo.min = nodo.min;
-            nuevo.id = nodo.id++;
+            nuevo.id = siguienteposicion;
+            siguienteposicion++;
         }
 
         public void Separar(NodoB<T> Nodo)
@@ -86,7 +88,7 @@ namespace Estructuras_de_Datos
             NodoB<T> padreAux = new NodoB<T>();
             NodoB<T> der = new NodoB<T>();
             CreandoNodo(izq, Nodo);
-            CreandoNodo(der, Nodo);
+            CreandoNodo(der, izq);
 
             for (int i = 0; i < Nodo.min; i++)
             {
@@ -228,7 +230,7 @@ namespace Estructuras_de_Datos
                 NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)];
                 return Busqueda(valor, NodoHijo);
             }
-            else if(BEncontrado == true)
+            else if (BEncontrado == true)
             {
                 return val;
             }
@@ -273,12 +275,12 @@ namespace Estructuras_de_Datos
                     {
                         //if (contador == 0)
                         //{
-                            indice = i;  //INDICE DE VALOR A SUSTITUIR
-                            NodoAModificar = Nodo; //NODO A SUSTITUIR VALOR DE NODO MAS IZQUIERDO DEL HIJO DERECHO
-                            contador++; //revisar para que se usa
-                            NodoInicial = true;
+                        indice = i;  //INDICE DE VALOR A SUSTITUIR
+                        NodoAModificar = Nodo; //NODO A SUSTITUIR VALOR DE NODO MAS IZQUIERDO DEL HIJO DERECHO
+                        contador++; //revisar para que se usa
+                        NodoInicial = true;
                         //}
-                        
+
                         NodoDar = MasIzquierdoDeDerecho(indice, Nodo, false);
 
                         NodoAModificar.Valores.Add(NodoDar.Valores[0]);
@@ -327,38 +329,38 @@ namespace Estructuras_de_Datos
             int posicionvalorpadre = 0;
             for (int i = 0; i < padre.Hijos.Count; i++)
             {   //Si nodo es el primero y el hermano a la derecha puede prestar
-                if (padre.Hijos[i] == nodo && i == 0 && padre.Hijos[i + 1].Valores.Count > padre.min) 
+                if (padre.Hijos[i] == nodo && i == 0 && padre.Hijos[i + 1].Valores.Count > padre.min)
                 {
                     hermano = padre.Hijos[i + 1];
                     posicionvalorpadre = i;
                     break;
                 }
                 //Si nodo es el ultimo y el hermano a la izquierda puede prestar
-                else if (padre.Hijos[i] == nodo && i == (padre.Hijos.Count - 1) && padre.Hijos[i - 1].Valores.Count > padre.min) 
+                else if (padre.Hijos[i] == nodo && i == (padre.Hijos.Count - 1) && padre.Hijos[i - 1].Valores.Count > padre.min)
                 {
                     hermano = padre.Hijos[i - 1];
                     posicionvalorpadre = i - 1;
                     break;
                 }
                 //Si el nodo se encuentra en medio, y el hermano a prestar es el de la izquierda
-                else if (padre.Hijos[i] == nodo && i > 0 && i < padre.Hijos.Count - 1 && padre.Hijos[i - 1].Valores.Count > padre.min) 
+                else if (padre.Hijos[i] == nodo && i > 0 && i < padre.Hijos.Count - 1 && padre.Hijos[i - 1].Valores.Count > padre.min)
                 {
                     hermano = padre.Hijos[i - 1];
                     posicionvalorpadre = i - 1;
                     break;
                 }
                 //Si el nodo se encuentra en medio, y el hermano a prestar es el de la derecha
-                else if (padre.Hijos[i] == nodo && i > 0 && i < padre.Hijos.Count - 1 && padre.Hijos[i + 1].Valores.Count > padre.min) 
+                else if (padre.Hijos[i] == nodo && i > 0 && i < padre.Hijos.Count - 1 && padre.Hijos[i + 1].Valores.Count > padre.min)
                 {
                     hermano = padre.Hijos[i + 1];
                     posicionvalorpadre = i;
                     break;
                 }
-                
+
             }
 
             //Si no encontro hermano para prestar valor
-            if(hermano.Padre == null)
+            if (hermano.Padre == null)
             {
                 for (int i = 0; i < padre.Hijos.Count; i++)
                 {
@@ -381,7 +383,7 @@ namespace Estructuras_de_Datos
                     else if (padre.Hijos[i] == nodo && i > 0 && i < padre.Hijos.Count - 1)
                     {
                         posicionvalorpadre = i;
-                        if(padre.Hijos[posicionvalorpadre + 1].Valores.Count > padre.Hijos[posicionvalorpadre - 1].Valores.Count)
+                        if (padre.Hijos[posicionvalorpadre + 1].Valores.Count > padre.Hijos[posicionvalorpadre - 1].Valores.Count)
                         {
                             hermano = padre.Hijos[posicionvalorpadre + 1];
                         }
@@ -396,7 +398,7 @@ namespace Estructuras_de_Datos
                         break;
                     }
                 }
-                
+
                 JuntarNodos(padre, posicionvalorpadre, nodo, hermano);
             }
             //Encontro valor y solo se traslada
@@ -492,12 +494,12 @@ namespace Estructuras_de_Datos
 
                 padre.Valores.Remove(padre.Valores[0]);
 
-                if(padre.Valores.Count < padre.min && padre.Padre != null)
+                if (padre.Valores.Count < padre.min && padre.Padre != null)
                 {
                     VerificarHermanos(padre.Padre, padre);
                 }
             }
-            
+
             else if (hijo.Valores[0].CompareTo(padre.Valores[0]) > 0 && hijo.Valores[hijo.Valores.Count - 1].CompareTo(padre.Valores[padre.Valores.Count - 1]) < 0) //Si es uno de enmedio
             {
                 if (hijo.Valores[0].CompareTo(padre.Valores[posicionvalorpadre]) > 0)
@@ -542,40 +544,40 @@ namespace Estructuras_de_Datos
                     hijo.Valores.Sort((x, y) => x.CompareTo(y));
                 }
 
-                
-                
 
-                
+
+
+
             }
-            
+
         }
 
-    public NodoB<T> MasIzquierdoDeDerecho(int IndiceValor, NodoB<T> Nodo, bool IrDerecha)
-    {
-        if (IrDerecha == false && Nodo.Hijos.Count > 0)
+        public NodoB<T> MasIzquierdoDeDerecho(int IndiceValor, NodoB<T> Nodo, bool IrDerecha)
         {
-            IrDerecha = true;
-            return MasIzquierdoDeDerecho(IndiceValor, Nodo.Hijos[IndiceValor + 1], IrDerecha);
-        }
-        else if (IrDerecha == true && Nodo.Hijos.Count > 0)
-        {
-            return MasIzquierdoDeDerecho(IndiceValor, Nodo.Hijos[0], IrDerecha);
-        }
-        else if (IrDerecha == true && Nodo.Hijos.Count == 0)
-        {
-            return Nodo;
-        }
-        else
-        {
-            return Nodo;
-        }
+            if (IrDerecha == false && Nodo.Hijos.Count > 0)
+            {
+                IrDerecha = true;
+                return MasIzquierdoDeDerecho(IndiceValor, Nodo.Hijos[IndiceValor + 1], IrDerecha);
+            }
+            else if (IrDerecha == true && Nodo.Hijos.Count > 0)
+            {
+                return MasIzquierdoDeDerecho(IndiceValor, Nodo.Hijos[0], IrDerecha);
+            }
+            else if (IrDerecha == true && Nodo.Hijos.Count == 0)
+            {
+                return Nodo;
+            }
+            else
+            {
+                return Nodo;
+            }
 
-    }
+        }
 
 
         public IEnumerator<T> GetEnumerator()
         {
-           throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
