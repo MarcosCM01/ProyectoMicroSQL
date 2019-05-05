@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Estructuras_de_Datos
 {
-    public class ArbolB<T> : IEnumerable<T> where T : IComparable
+    public class ArbolB<T> : IArboles<T> , IEnumerable<T> where T : IComparable 
     {
         public NodoB<T> Raiz { get; set; }
         public int siguienteposicion { get; set; }

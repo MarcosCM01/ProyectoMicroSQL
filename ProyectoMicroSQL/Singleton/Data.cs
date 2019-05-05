@@ -21,7 +21,7 @@ namespace ProyectoMicroSQL.Singleton
             }
         }
 
-        public Dictionary<string, string> Dictionary = new Dictionary<string, string>();
+        public Dictionary<string, string> PalabrasReservadas = new Dictionary<string, string>();
         public List<string> ListaV = new List<string>();
         public List<string> ListaK = new List<string>();
 
@@ -34,8 +34,13 @@ namespace ProyectoMicroSQL.Singleton
                 if (contador > 0)
                 {
                     string[] infolinea = item.Split(';');
-                    
-                    Dictionary.Add(infolinea[0], infolinea[1]);
+
+                    for (int i = 0; i < infolinea.Length; i++)
+                    {
+                        infolinea[i] = infolinea[i] + "\r";
+                    }
+
+                    PalabrasReservadas.Add(infolinea[0], infolinea[1]);
                     ListaK.Add(infolinea[0]);
                     ListaV.Add(infolinea[1]);
                 }
@@ -49,7 +54,7 @@ namespace ProyectoMicroSQL.Singleton
         {
             for (int i = 0; i < ListaV.Count; i++)
             {
-                Dictionary[ListaK[i]] = ListaV[i];
+                PalabrasReservadas[ListaK[i]] = ListaV[i];
               
             }
             
