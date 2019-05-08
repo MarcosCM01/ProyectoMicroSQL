@@ -43,8 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArbolB.cs" />
+    <Compile Include="ArbolBP.cs" />
     <Compile Include="IArboles.cs" />
     <Compile Include="NodoB.cs" />
+    <Compile Include="NodoBP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -543,11 +543,6 @@ namespace Estructuras_de_Datos
                     padre.Valores.RemoveAt(posicionvalorpadre);
                     hijo.Valores.Sort((x, y) => x.CompareTo(y));
                 }
-
-
-
-
-
             }
 
         }
