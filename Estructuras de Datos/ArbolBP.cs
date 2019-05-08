@@ -228,6 +228,50 @@ namespace Estructuras_de_Datos
         }
         #endregion
 
+        #region Busqueda
+        //INDICAR EN EL CONTROLADOR QUE SI ES FALSO, INDIQUE QUE NO SE ENCONTRO EL DATO
+        public void busquedaEnRaiz(T valor)
+        {
+            busquedaEnHojas(valor, root);
+
+        }
+        static T val;
+        public object busquedaEnHojas(T value, NodoBP<T> node)
+        {
+            bool encontrado = false;
+            foreach (var item in node.values)
+            {
+                if (item.CompareTo(value) == 0 && node.hijos.Count > 0)//PARA QUE LO ENCUENTRE EN LAS HOJAS
+                {
+                    val = item;
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (encontrado == false && node.values.Count > 0)
+            {
+                NodoBP<T> nodoAux = new NodoBP<T>();
+                nodoAux = node.hijos[HijoAEntrar(node, value)];
+                return busquedaEnHojas(value, nodoAux);
+            }
+            else if (encontrado == true)
+            {
+                return val;
+            }
+            else if (encontrado == false && node.hijos.Count == 0)
+            {
+                return "El dato que busca no se encuentra";
+            }
+            else
+            {
+                return val;
+            }
+
+        }
+        #endregion
+
+
         public IEnumerator<T> GetEnumerator()
         {
             throw new NotImplementedException();
