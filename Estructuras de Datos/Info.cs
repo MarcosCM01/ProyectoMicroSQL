@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ProyectoMicroSQL.Models
+namespace Estructuras_de_Datos
 {
     public class Info : IComparable
     {

@@ -29,8 +29,11 @@ namespace ProyectoMicroSQL.Singleton
 
         public Dictionary<string, Estructuras_de_Datos.ArbolB<Info>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Info>>();
 
+        
         public void LecturaCSV(string path)
         {
+            
+
             string[] lineas = File.ReadAllLines(path);
             var contador = 0;
             foreach (var item in lineas)
@@ -60,7 +63,6 @@ namespace ProyectoMicroSQL.Singleton
         {
             string[] lineas = File.ReadAllLines(path);
             string[] linea;
-            var contador = 0;
             foreach (var item in lineas)
             {
                 linea = item.Split('|');

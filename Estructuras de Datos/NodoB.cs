@@ -12,7 +12,7 @@ namespace Estructuras_de_Datos
         public NodoB<T> Padre { get; set; }
         public List<NodoB<T>> Hijos { get; set; }
 
-        public List<T> Valores { get; set; }
+        public List<Info> Valores { get; set; }
 
         public int id { get; set; }
         public int max { get; set; }
@@ -22,7 +22,7 @@ namespace Estructuras_de_Datos
         {
             Padre = null;
             Hijos = new List<NodoB<T>>();
-            Valores = new List<T>();
+            Valores = new List<Info>();
             id = 0;
             max = 0;
             min = 0;

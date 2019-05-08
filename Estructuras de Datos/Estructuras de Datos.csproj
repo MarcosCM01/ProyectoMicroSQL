@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ArbolB.cs" />
     <Compile Include="IArboles.cs" />
+    <Compile Include="Info.cs" />
     <Compile Include="NodoB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
