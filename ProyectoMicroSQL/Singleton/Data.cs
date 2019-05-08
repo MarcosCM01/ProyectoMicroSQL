@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
-
+using System.Collections;
+using ProyectoMicroSQL.Models;
 namespace ProyectoMicroSQL.Singleton
 {
     public class Data
@@ -24,6 +25,9 @@ namespace ProyectoMicroSQL.Singleton
         public Dictionary<string, string> PalabrasReservadas = new Dictionary<string, string>();
         public List<string> ListaV = new List<string>();
         public List<string> ListaK = new List<string>();
+
+
+        public Dictionary<string, Estructuras_de_Datos.ArbolB<Info>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Info>>();
 
         public void LecturaCSV(string path)
         {
@@ -50,14 +54,28 @@ namespace ProyectoMicroSQL.Singleton
                 }
             }
         }
+
+
+        public void LecturaTablas(string path)
+        {
+            string[] lineas = File.ReadAllLines(path);
+            string[] linea;
+            var contador = 0;
+            foreach (var item in lineas)
+            {
+                linea = item.Split('|');
+
+            }
+        }
+
         public void Reestablecer()
         {
             for (int i = 0; i < ListaV.Count; i++)
             {
                 PalabrasReservadas[ListaK[i]] = ListaV[i];
-              
             }
             
         }
+
     }
 }

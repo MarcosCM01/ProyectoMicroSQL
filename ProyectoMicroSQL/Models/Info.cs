@@ -8,22 +8,26 @@ namespace ProyectoMicroSQL.Models
 {
     public class Info : IComparable
     {
-        public int PrimaryKey { get; set; }
-        public int[] Int1 { get; set; }
+        public int id { get; set; }
+
+        //public int[] Ints { get; set; }
         public List<int> ListaInt { get; set; }
 
-        public char[] char1 { get; set; }
-        public List<char> ListaChar { get; set; }
+        public Dictionary<string, List<object>> Lista { get; set; }
+        
 
-        public DateTime[] dt1 { get; set; }
+        //public string[] strings { get; set; }
+        public List<string> ListaChar { get; set; }
+
+        //public DateTime[] dts { get; set; }
         public List<DateTime> ListaDT { get; set; }
 
         public Info()
         {
-            Int1 = new int[3];
-            char1 = new char[3];
-            dt1 = new DateTime[3];
-            ListaChar = new List<char>();
+            //Ints = new int[3];
+            //chars = new string[3];
+            //dts = new DateTime[3];
+            ListaChar = new List<string>();
             ListaDT = new List<DateTime>();
             ListaInt = new List<int>();
         }
@@ -33,11 +37,10 @@ namespace ProyectoMicroSQL.Models
             throw new NotImplementedException();
         }
 
-
         public int CompareTo(object obj)
         {
             var comparable = (Info)obj;
-            return PrimaryKey.CompareTo(comparable.PrimaryKey);
+            return id.CompareTo(comparable.id);
         }
     }
 }

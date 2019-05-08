@@ -9,13 +9,13 @@
     @Html.ActionLink("Regresar a Menu Principal", "Menu")
 </p>
 <p>@ViewBag.Error</p>
-<ul>
+
     @using (Html.BeginForm("Modificar", "Home", FormMethod.Post))
     {
         <input type="text" name="NewWord" id="NewWord" />
         <input type="submit" value="Modificar" class="btn btn-outline-success" />
     }
-</ul>
+
 <table class="table table-hover">
     <tr class="table">
         <th>
@@ -27,7 +27,7 @@
         
     </tr>
 
-    @foreach(var item in ProyectoMicroSQL.Singleton.Data.Instancia.Dictionary)
+    @foreach(var item in ProyectoMicroSQL.Singleton.Data.Instancia.PalabrasReservadas)
     {
     <tr class="table">
         <td>

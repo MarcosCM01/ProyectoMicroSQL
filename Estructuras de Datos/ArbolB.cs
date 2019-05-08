@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Estructuras_de_Datos
 {
-    public class ArbolB<T> : IArboles<T> , IEnumerable<T> where T : IComparable 
+    public class ArbolB<T> : IEnumerable<T> where T : IComparable
     {
         public NodoB<T> Raiz { get; set; }
         public int siguienteposicion { get; set; }
+        public List<string> ListaAux { get; set; }
         public ArbolB()
         {
             Raiz = null;
@@ -18,9 +19,27 @@ namespace Estructuras_de_Datos
         }
 
 
+        //public void Recorrido(NodoB<T> Nodo)
+        //{
+        //    if (ExisteNodosHijo(Nodo.Hijos[0]) == true)
+        //    {
+        //        Recorrido(Nodo.Hijos[0]);
+        //        for (int i = 0; i < Nodo.Valores.Count; i++)
+        //        {
+        //            ListaAux.Add(Nodo.Valores[i]);
+        //            Recorrido(Nodo.Hijos[i]);
+        //        }
+        //    }
+        //}
+
+        //public void EscrituraTXT(List<T> InfoLista)
+        //{
+
+        //}
+
+
         public bool ExisteNodosHijo(NodoB<T> Nodo)
         {
-
             if (Nodo.Hijos.Count == 0)
             {
                 return false;
@@ -87,8 +106,6 @@ namespace Estructuras_de_Datos
             NodoB<T> izq = new NodoB<T>();
             NodoB<T> padreAux = new NodoB<T>();
             NodoB<T> der = new NodoB<T>();
-            CreandoNodo(izq, Nodo);
-            CreandoNodo(der, izq);
 
             for (int i = 0; i < Nodo.min; i++)
             {
@@ -105,6 +122,11 @@ namespace Estructuras_de_Datos
             {
                 PadreHijo(Nodo.Padre, izq);
                 PadreHijo(Nodo.Padre, der);
+
+                CreandoNodo(izq, Nodo);
+                izq.id = Nodo.id;
+                siguienteposicion--;
+                CreandoNodo(der, izq);
 
                 Nodo.Padre.Valores.Add(Nodo.Valores[Nodo.min]);
                 Nodo.Padre.Valores.Sort((x, y) => x.CompareTo(y));
@@ -132,6 +154,8 @@ namespace Estructuras_de_Datos
             }//Si es la raiz y aun caben valores en el nodo
             else if (Nodo.Padre == null && Nodo.Hijos.Count < 5)
             {
+                CreandoNodo(izq, Nodo);
+                CreandoNodo(der, izq);
                 padreAux.Valores.Add(Nodo.Valores[Nodo.min]);
                 PadreHijo(Nodo, izq);
                 PadreHijo(Nodo, der);
@@ -140,6 +164,9 @@ namespace Estructuras_de_Datos
             }//Si es raiz y no caben valores
             else if (Nodo.Padre == null && Nodo.Hijos.Count >= 5)
             {
+                CreandoNodo(izq, Nodo);
+                CreandoNodo(der, izq);
+
                 T val = Nodo.Valores[Nodo.min];
 
                 HijosDeHijos(Nodo, izq, 0, Nodo.min);

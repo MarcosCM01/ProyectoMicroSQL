@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoMicroSQL.Singleton;
 using ProyectoMicroSQL.Models;
-using System;
 
 namespace ProyectoMicroSQL.Controllers
 {
@@ -24,7 +23,7 @@ namespace ProyectoMicroSQL.Controllers
         [HttpPost]
         public ActionResult CargarTablas(HttpPostedFileBase file)
         {
-            return View();
+            return RedirectToAction("Index");
         }
 
         public ActionResult CodigoSQL()
@@ -35,58 +34,18 @@ namespace ProyectoMicroSQL.Controllers
         [HttpPost]
         public ActionResult CodigoSQL(string codigo)
         {
-            List<List<string>> bloques = new List<List<string>>();
-
             
             string[] lineas = codigo.Trim().Split('\n');
-            string[] Aux = new string[lineas.Length];
             int contador = 0;
             List<string> ComandosAAgregar = new List<string>();
-
-            var Key = "";
-            if (lineas.Contains("GO\r") || lineas.Contains("GO"))
-            {
-                for (int i = 0; i < lineas.Length; i++)
-                {
-                    if (lineas[i] != "GO\r" && lineas[i] != "GO")
-                    {
-                        Aux[i] = lineas[i];
-                    }
-                    
-                    else
-                    {
-                        foreach(var item in Aux)
-                        {
-                            ComandosAAgregar.Add(item);
-                        }
-                        
-                        bloques.Add(ComandosAAgregar);
-                        for (int j = 0; j < Aux.Length; j++)
-                        {
-                            Aux[j] = null;
-                        }
-                        contador++;
-                        
-                    }
-                }
-
-                foreach(var item in bloques)
-                {
-                    if(item[0] == "GO")
-                    {
-                        item.RemoveAt(0);
-                    }
-                }
-                
-            }
-            
+            string Key;
             if (Data.Instancia.PalabrasReservadas.ContainsValue(lineas[0]) == true)
             {
                 Key = lineas[0];
                 int indice = 0;
                 for (int i = 0; i < Data.Instancia.ListaV.Count; i++)
                 {
-                    if(Data.Instancia.ListaV[i] == Key)
+                    if (Data.Instancia.ListaV[i] == Key)
                     {
                         indice = i;
                         break;
@@ -100,12 +59,11 @@ namespace ProyectoMicroSQL.Controllers
                 Key = lineas[0];
                 Instrucciones(Key, lineas);
             }
-            
+
             else
             {
                 ViewBag.ErrorCodigo = "Se escribio incorrectamente un comando";
             }
-
             return View();
         }
 
@@ -118,51 +76,79 @@ namespace ProyectoMicroSQL.Controllers
             string nombreTabla = "";
             string[] variablesNuevas;
             string[] comandos;
-            switch (Key)
+            if(instrucciones[instrucciones.Length - 1] != "GO" && instrucciones[instrucciones.Length - 1] != "GO\r")
             {
-                case "CREATE TABLE\r":
-                    Estructuras_de_Datos.ArbolB<Info> arbolB = new Estructuras_de_Datos.ArbolB<Info>();
-                    nombreTabla = instrucciones[1];
-                    if(instrucciones[2] == "(")
-                    {
-                        int contador = 2;
-                        while(instrucciones[contador] != ")")
+                ViewBag.ErrorCodigo = "Sintaxis incorrecta: 'GO' omitido al final";
+            }
+            else
+            {
+                switch (Key)
+                {
+                    case "CREATE TABLE\r":
+                        Estructuras_de_Datos.ArbolB<Info> arbolB = new Estructuras_de_Datos.ArbolB<Info>();
+                        nombreTabla = instrucciones[1];
+                        string[] aux = nombreTabla.Split('\r');
+                        nombreTabla = aux[0];
+
+                        Data.Instancia.Arboles.Add(nombreTabla, arbolB);
+
+                        if (instrucciones[2] == "(\r")
                         {
-                            variablesNuevas = instrucciones[contador].Split(',');
-                            foreach(var item in variablesNuevas)
+                            int contador = 3;
+                            while (instrucciones[contador] != ")\r")
                             {
-                                comandos = item.Split(' ');
+                                variablesNuevas = instrucciones[contador].Split(',');
+                                if(variablesNuevas[0] == "ID INT PRIMARY KEY")
+                                {
+                                    comandos = variablesNuevas[0].Split(' ');
+                                    Info informacion = new Info();
+
+                                    informacion.id = int.Parse(comandos[0]);
+                                }
+                                else
+                                {
+                                    
+                                }
+                                
+                                 
+                                
+                                contador++;
                             }
                         }
-                    }
-                    break;
-                case "SELECT\r":
+                        else
+                        {
+                            ViewBag.ErrorCodigo = "Sintaxis incorrecta: '(' omitido al inicio";
+                        }
+                        break;
+                    case "SELECT\r":
 
-                    break;
-                case "FROM\r":
+                        break;
+                    case "FROM\r":
 
-                    break;
-                case "DELETE\r":
+                        break;
+                    case "DELETE\r":
 
-                    break;
-                case "WHERE\r":
+                        break;
+                    case "WHERE\r":
 
-                    break;
-                case "DROP TABLE\r":
+                        break;
+                    case "DROP TABLE\r":
 
-                    break;
-                case "INSERT INTO\r":
+                        break;
+                    case "INSERT INTO\r":
 
-                    break;
-                case "VALUES\r":
+                        break;
+                    case "VALUES\r":
 
-                    break;
-                case "GO\r":
+                        break;
+                    case "GO\r":
 
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
             }
+            
         }
 
         static int contador = 0;
