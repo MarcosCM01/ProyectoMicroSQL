@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoMicroSQL.Singleton;
-using ProyectoMicroSQL.Models;
 
 namespace ProyectoMicroSQL.Controllers
 {
@@ -91,6 +90,8 @@ namespace ProyectoMicroSQL.Controllers
         static List<int> Codigobloque1 = new List<int>();
         static List<int> Codigobloque2 = new List<int>();
 
+        static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
+
         public void Instrucciones(string Key, string[] instrucciones)
         {
             string nombreTabla = "";
@@ -110,12 +111,8 @@ namespace ProyectoMicroSQL.Controllers
                     switch (Key)
                     {
                         case "CREATE TABLE\r":
-                            Estructuras_de_Datos.ArbolB<Info> arbolB = new Estructuras_de_Datos.ArbolB<Info>();
-
-
-                            Info info = new Info();
-
                             
+                            Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro> arbolB = new Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>();
 
                             if(Data.Instancia.Arboles.ContainsKey(nombreTabla))
                             {
@@ -148,25 +145,29 @@ namespace ProyectoMicroSQL.Controllers
                                             case "INT":
                                                 List<int> listaint = new List<int>();
                                                 info.Variables.Add(linea[0], listaint);
+                                                info.ContadorInt++;
                                                 break;
                                             case "VARCHAR(100)":
                                                 List<char[]> listachar = new List<char[]>();
                                                 info.Variables.Add(linea[0], listachar);
+                                                info.ContadorChar++;
                                                 break;
                                             case "DATETIME":
                                                 List<DateTime> listaDT = new List<DateTime>();
                                                 info.Variables.Add(linea[0], listaDT);
+                                                info.ContadorDT++;
                                                 break;
                                             default:
                                                 ViewBag.MensajeError = "TIPO DE DATO NO ADMITIDO";
                                                 break;
                                         }
                                     }
-                                    arbolB.Raiz.Valores.Add(info);
+
+                                    //arbolB.Raiz.Valores.Add(info);
                                 }
                                 else
                                 {
-                                    ViewBag.ErrorCodigo = "Sintaxis incorrecta: '(' omitido al inicio";
+                                    ViewBag.MensajeError = "Sintaxis incorrecta: '(' omitido al inicio";
                                 }
                             }
 
@@ -193,22 +194,64 @@ namespace ProyectoMicroSQL.Controllers
                                 Codigobloque2.Clear();
                                 ContadorDeInstrucciones(instrucciones, 0, Codigobloque1);
                                 ContadorDeInstrucciones(instrucciones, Codigobloque1[1] + 1, Codigobloque2);
-                                
+
+                                List<string> VariablesAAgregar = new List<string>();
+                                List<string> DatosDeVariables = new List<string>();
                                 //Depuracion
-                                for (int i = Codigobloque1[0]; i < Codigobloque1[1]; i++)
+                                for (int i = Codigobloque1[0] + 1; i < Codigobloque1[1]; i++)
                                 {
                                     string[] linea = new string[100];
                                     linea = instrucciones[i].Split('\r');
+                                    linea = linea[0].Split(',');
+                                    VariablesAAgregar.Add(linea[0]);
                                 }
-                                for (int i = Codigobloque2[0]; i < Codigobloque2[1]; i++)
+                                for (int i = Codigobloque2[0] + 1; i < Codigobloque2[1]; i++)
                                 {
+                                    char[] Lineachar = instrucciones[i].ToCharArray();
                                     string[] linea = new string[100];
-                                    linea = instrucciones[i].Split('\'');
+                                    linea = instrucciones[i].Split('\r');
+                                    linea = linea[0].Split(',');
+                                    if(Lineachar.Contains('\''))
+                                    {
+                                        linea = linea[0].Split('\'');
+                                        DatosDeVariables.Add(linea[1]);
+                                    }
+                                    else
+                                    {
+                                        DatosDeVariables.Add(linea[0]);
+                                    }
+                                    
+                                }
+                                try
+                                {
+                                    for (int i = 0; i < VariablesAAgregar.Count; i++)
+                                    {
+                                        if (VariablesAAgregar.Count == DatosDeVariables.Count && info.Variables.ContainsKey(VariablesAAgregar[i]) && VariablesAAgregar.Count == info.Variables.Count)
+                                        {
+                                            var LAux = info.Variables[VariablesAAgregar[i]];
+                                            var LAux1 = (List<object>)LAux;
+                                            LAux1.Add(DatosDeVariables[i]);
+                                            
+                                            
+                                        }
+                                        else
+                                        {
+                                            ViewBag.MensajeError = "Falto una variable o excedio la cantidad";
+                                        }
+                                    }
+                                    Estructuras_de_Datos.Registro Reg = new Estructuras_de_Datos.Registro();
+                                    for (int i = 0; i < info.Variables.Count; i++)
+                                    {
+
+                                    }
+                                }
+                                catch
+                                {
+                                    ViewBag.MensajeError = "ERROR DE SINTAXIS";
                                 }
 
-                                Data.Instancia.Arboles[nombreTabla].Raiz.Valores.
-
-                                //Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, );
+                                
+                                
 
                             }
                             break;

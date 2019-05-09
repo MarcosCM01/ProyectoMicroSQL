@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using System.Collections;
-using ProyectoMicroSQL.Models;
 namespace ProyectoMicroSQL.Singleton
 {
     public class Data
@@ -25,9 +24,11 @@ namespace ProyectoMicroSQL.Singleton
         public Dictionary<string, string> PalabrasReservadas = new Dictionary<string, string>();
         public List<string> ListaV = new List<string>();
         public List<string> ListaK = new List<string>();
+        public List<string> ListaVariables = new List<string>();
 
 
-        public Dictionary<string, Estructuras_de_Datos.ArbolB<Info>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Info>>();
+        public Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>>();
+        public Estructuras_de_Datos.Info Informacion = new Estructuras_de_Datos.Info();
 
         
         public void LecturaCSV(string path)

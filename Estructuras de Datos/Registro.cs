@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Estructuras_de_Datos
 {
-    public class Registro
+    public class Registro : IComparable
     {
         public int IDPrimaryKey { get; set; }
 
