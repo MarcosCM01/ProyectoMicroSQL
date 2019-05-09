@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Grid";
+}
+
+<h2>Grid</h2>
+
+
+<table class="table table-hover">
+    <tr class="table">
+        @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.ListaVariables)
+        {
+            <th>
+                @item
+            </th>
+
+        }
+    </tr>
+    <tr class="table">
+        @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.reg.Valores)
+        {
+            <td>
+                @item
+            </td>
+        }
+    </tr>
+    
+    </table>
