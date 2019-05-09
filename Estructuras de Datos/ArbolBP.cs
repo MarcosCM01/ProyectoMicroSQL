@@ -271,6 +271,128 @@ namespace Estructuras_de_Datos
         }
         #endregion
 
+        #region Eliminacion
+        //EN EL CONTROLADOR, MEJOR MANDAR A LLAMAR SI ESTA.
+        public void Eliminar(T value)
+        {
+            EliminarValor(value, root);
+        }
+        public void EliminarValor(T valor, NodoBP<T> nodo)
+        {
+            NodoBP<T> aux = new NodoBP<T>();
+            aux = BusquedaDelNodo(valor, nodo);//nodo donde se encuentre el valor a eliminar
+
+            foreach (var item in aux.values)
+            {
+                if (item.CompareTo(valor) == 0)
+                {
+                    aux.values.Remove(valor);
+                    aux.values.Sort((x, y) => x.CompareTo(y));
+                    break;
+                }
+            }
+
+            if (aux.values.Count < aux.min)//SI EL NODO QUEDA EN UNDERFLOW
+            {
+                //VERIFICAR SI ES EL ULTIMO HIJO
+                if (aux.hermano != null)
+                {
+                    //EL HERMANO PUEDE PRESTAR
+                    if (aux.hermano.values.Count > aux.min)
+                    {
+                        PrestarValores(aux);
+                    }
+                    else //SE FUSIONA CON EL HERMANO
+                    {
+                        FusionarNodos(aux);
+                    }
+                }
+                else
+                {
+                    //ES PORQUE ES EL ULTIMO
+                    PasarAlaIzquierda(aux, aux.padre.hijos[aux.padre.hijos.Count - 2]);
+                }
+
+            }
+            //FALTA: SABER QUE HACER CON LA DISTRIBUCION DE CLAVES, YA QUE EL PADRE TAMBIEN PUEDE QUEDAR EN UNDERFLOW. VER IMAGEN
+        }
+        #endregion
+
+        #region metodosAuxEliminacion
+        public NodoBP<T> BusquedaDelNodo(T value, NodoBP<T> nodoIndicado)
+        {
+            bool encontrado = false;
+            foreach (var item in nodoIndicado.values)
+            {
+                if (item.CompareTo(value) == 0 && nodoIndicado.hijos.Count == 0)//Para verificar que si este en una hoja
+                {
+                    encontrado = true;
+                    return nodoIndicado;
+
+                }
+            }
+            if (encontrado == false && nodoIndicado.hijos.Count > 0)
+            {
+                NodoBP<T> Aux = new NodoBP<T>();
+                Aux = nodoIndicado.hijos[HijoAEntrar(nodoIndicado, value)];
+                return BusquedaDelNodo(value, Aux);
+            }
+            else
+            {
+                return nodoIndicado;
+            }
+        }
+        public void PrestarValores(NodoBP<T> nodo)
+        {
+            nodo.values.Add(nodo.hermano.values[0]);
+            T val = nodo.hermano.values[0];
+            foreach (var item in nodo.padre.values)
+            {
+                if (item.CompareTo(val) == 0)
+                {
+                    nodo.padre.values.Remove(val);
+                    nodo.padre.values.Sort((x, y) => x.CompareTo(y));
+                    break;
+                }
+            }
+            nodo.hermano.values.Remove(nodo.hermano.values[0]);
+            nodo.hermano.values.Sort((x, y) => x.CompareTo(y));
+        }
+        public void FusionarNodos(NodoBP<T> nodo)
+        {
+            for (int i = 0; i < nodo.hermano.values.Count; i++)
+            {
+                nodo.values.Add(nodo.hermano.values[i]);
+            }
+            nodo.values.Sort((x, y) => x.CompareTo(y));
+
+            foreach (var item in nodo.padre.values)
+            {
+                if (item.CompareTo(nodo.hermano.values[0]) == 0)
+                {
+                    nodo.padre.values.Remove(item);
+                    nodo.padre.values.Sort((x, y) => x.CompareTo(y));
+                    break;
+                }
+            }
+            nodo.padre.hijos.Remove(nodo.hermano);
+            nodo.hermano.values.Clear();
+            nodo.hermano = null;
+            nodo.hermano = nodo.hermano.hermano;
+        }
+        public void PasarAlaIzquierda(NodoBP<T> nodo, NodoBP<T> izquierdo)
+        {
+            for (int i = 0; i < nodo.values.Count; i++)
+            {
+                izquierdo.values.Add(nodo.values[i]);
+            }
+            izquierdo.values.Sort();
+            nodo.padre.values.Remove(nodo.padre.values[nodo.padre.values.Count - 1]);
+            nodo.values.Clear();
+            nodo.padre.hijos.Remove(nodo);
+            izquierdo.hermano = null;
+        }
+        #endregion
 
         public IEnumerator<T> GetEnumerator()
         {
