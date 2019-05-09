@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -28,6 +28,7 @@ namespace ProyectoMicroSQL.Singleton
 
 
         public Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>>();
+        public Dictionary<string, Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>> ArbolesBPlus = new Dictionary<string, Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>>();
         public Estructuras_de_Datos.Info Informacion = new Estructuras_de_Datos.Info();
 
         
