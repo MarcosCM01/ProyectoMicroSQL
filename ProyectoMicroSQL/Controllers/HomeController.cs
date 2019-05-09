@@ -90,7 +90,7 @@ namespace ProyectoMicroSQL.Controllers
         static List<int> Codigobloque1 = new List<int>();
         static List<int> Codigobloque2 = new List<int>();
 
-        static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
+        public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
 
         public void Instrucciones(string Key, string[] instrucciones)
         {
@@ -143,17 +143,17 @@ namespace ProyectoMicroSQL.Controllers
                                         switch (linea[1])
                                         {
                                             case "INT":
-                                                List<int> listaint = new List<int>();
+                                                List<string> listaint = new List<string>();
                                                 info.Variables.Add(linea[0], listaint);
                                                 info.ContadorInt++;
                                                 break;
                                             case "VARCHAR(100)":
-                                                List<char[]> listachar = new List<char[]>();
+                                                List<string> listachar = new List<string>();
                                                 info.Variables.Add(linea[0], listachar);
                                                 info.ContadorChar++;
                                                 break;
                                             case "DATETIME":
-                                                List<DateTime> listaDT = new List<DateTime>();
+                                                List<string> listaDT = new List<string>();
                                                 info.Variables.Add(linea[0], listaDT);
                                                 info.ContadorDT++;
                                                 break;
@@ -162,15 +162,13 @@ namespace ProyectoMicroSQL.Controllers
                                                 break;
                                         }
                                     }
-
-                                    //arbolB.Raiz.Valores.Add(info);
+                                    ViewBag.MensajeError = "Creacion exitosa de " + nombreTabla;
                                 }
                                 else
                                 {
                                     ViewBag.MensajeError = "Sintaxis incorrecta: '(' omitido al inicio";
                                 }
                             }
-
                             break;
                         case "SELECT\r":
 
@@ -190,8 +188,8 @@ namespace ProyectoMicroSQL.Controllers
                         case "INSERT INTO\r":
                             if(Data.Instancia.Arboles.ContainsKey(nombreTabla))
                             {
-                                Codigobloque1.Clear();
-                                Codigobloque2.Clear();
+                                Codigobloque1.Clear();//EL QUE EL TIENE EL NOMBRE DE VARIBALES
+                                Codigobloque2.Clear();//EL QUE TIENE LOS VALORES DE LAS VARIABLES
                                 ContadorDeInstrucciones(instrucciones, 0, Codigobloque1);
                                 ContadorDeInstrucciones(instrucciones, Codigobloque1[1] + 1, Codigobloque2);
 
@@ -224,35 +222,35 @@ namespace ProyectoMicroSQL.Controllers
                                 }
                                 try
                                 {
+                                    Estructuras_de_Datos.Registro Reg = new Estructuras_de_Datos.Registro();
                                     for (int i = 0; i < VariablesAAgregar.Count; i++)
                                     {
                                         if (VariablesAAgregar.Count == DatosDeVariables.Count && info.Variables.ContainsKey(VariablesAAgregar[i]) && VariablesAAgregar.Count == info.Variables.Count)
                                         {
                                             var LAux = info.Variables[VariablesAAgregar[i]];
-                                            var LAux1 = (List<object>)LAux;
-                                            LAux1.Add(DatosDeVariables[i]);
-                                            
-                                            
+                                            LAux.Add(DatosDeVariables[i]);
+                                            Reg.Valores.Add(DatosDeVariables[i]);
+                                            if(i == 0) { Reg.Valores.Remove(Reg.Valores[i]); }
                                         }
                                         else
                                         {
                                             ViewBag.MensajeError = "Falto una variable o excedio la cantidad";
+                                            break;
                                         }
                                     }
-                                    Estructuras_de_Datos.Registro Reg = new Estructuras_de_Datos.Registro();
-                                    for (int i = 0; i < info.Variables.Count; i++)
-                                    {
-
-                                    }
+                                    Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
+                                    Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg);
+                                    ViewBag.MensajeError = "Insercion exitosa en " + nombreTabla;
                                 }
                                 catch
                                 {
                                     ViewBag.MensajeError = "ERROR DE SINTAXIS";
-                                }
+                                }   
 
-                                
-                                
-
+                            }
+                            else
+                            {
+                                ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
                             }
                             break;
                         case "VALUES\r":

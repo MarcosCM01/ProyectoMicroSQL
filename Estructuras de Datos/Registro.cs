@@ -10,14 +10,13 @@ namespace Estructuras_de_Datos
     {
         public int IDPrimaryKey { get; set; }
 
-        public List<object> Valores { get; set; }
+        public List<string> Valores { get; set; }
 
         public Registro()
         {
-            Valores = new List<object>();
+            Valores = new List<string>();
             IDPrimaryKey = 0;
         }
-
 
         public int CompareTo(object obj)
         {
