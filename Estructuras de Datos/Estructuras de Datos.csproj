@@ -43,9 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArbolB.cs" />
+    <Compile Include="ArbolBPlus.cs" />
     <Compile Include="IArboles.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="NodoB.cs" />
+    <Compile Include="NodoBPlus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registro.cs" />
   </ItemGroup>
