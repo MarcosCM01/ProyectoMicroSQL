@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Estructuras_de_Datos
 {
-    interface IArboles<T>
+    interface IArboles<T> : IEnumerable<T> where  T : IComparable
     {
-        void Insertar(T valor);
-        void Eliminar(T valor);
+        void Insertar(NodoB<T> Nodo, T valor);
+        void Eliminar(T valor, NodoB<T> Nodo);
     }
 }

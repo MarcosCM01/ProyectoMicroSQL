@@ -7,35 +7,37 @@ using System.Threading.Tasks;
 
 namespace Estructuras_de_Datos
 {
-    public class NodoB<T> : IEnumerable<T> where T : IComparable
+    public class NodoBP<T> : IEnumerable<T> where T : IComparable
     {
-        public NodoB<T> Padre { get; set; }
-        public List<NodoB<T>> Hijos { get; set; }
+        public NodoBP<T> padre { get; set; }
+
+        public List<NodoBP<T>> hijos { get; set; }
+
+        public NodoBP<T> hermano { get; set; }
+
+        public List<T> values { get; set; }
 
         public int id { get; set; }
         public int max { get; set; }
         public int min { get; set; }
 
-
-        public List<Registro> Valores { get; set; }
-        public NodoB()
+        public NodoBP()
         {
-            Padre = null;
-            Hijos = new List<NodoB<T>>();
-            Valores = new List<Registro>();
+            padre = null;
+            hermano = null;
+            hijos = new List<NodoBP<T>>();
+            values = new List<T>();
             id = 0;
             max = 0;
             min = 0;
         }
 
 
-
-        public void AsignarGrado(NodoB<T> Nodo, int grado)
+        public void AsignarGrado(NodoBP<T> Nodo, int grado)
         {
             Nodo.max = grado - 1;
             Nodo.min = Nodo.max / 2;
         }
-
         public IEnumerator<T> GetEnumerator()
         {
             throw new NotImplementedException();
@@ -45,6 +47,5 @@ namespace Estructuras_de_Datos
         {
             throw new NotImplementedException();
         }
-
     }
 }

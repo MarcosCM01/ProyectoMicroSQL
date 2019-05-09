@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "CARGA DE TABLAS";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Carga de tablas</h2>
+    <h4 class="display-3"> Cargue su información para poder verla ordenadamente</h4>
+    <p class="lead">
+        @using (Html.BeginForm("CargarTablas", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+        <p>SUBE EL ARCHIVO </p>
+        <input type="file" name="file" />
+        <hr />
+        <input type="submit" value="Subir" class="btn btn-outline-success" />
+    }
+        </p>
+        <h6>@ViewBag.Msg</h6>
+    </div>

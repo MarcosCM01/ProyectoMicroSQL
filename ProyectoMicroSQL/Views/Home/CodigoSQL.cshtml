@@ -1,13 +1,24 @@
-﻿
-@{
-    ViewBag.Title = "CodigoSQL";
+﻿@{
+    ViewBag.Title = "Codigo SQL: Comandos ";
 }
 
-<h2>@ViewBag.Title</h2>
-
-<textarea class="form-control"
-          id="Description"
-          name="Description"
-          rows="40"
-          cols="20">This is value</textarea>
-
+    <div class="jumbotron">
+        <h2 class="display-3"> PROYECTO MICRO SQL: Comandos SQL</h2>
+        <h4 class="display-3"> Escribe tus acciones, modifica tus tablas, añade, elimina, etc.</h4>
+        <h3>@ViewBag.MensajeError</h3>
+        <p class="lead">
+            @using (Html.BeginForm("CodigoSQL", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+            <p>ESCRIBE TU CODIGO SQL</p>
+            <textarea class="form-control"
+                      id="codigo"
+                      name="codigo"
+                      rows="40"
+                      cols="20"></textarea>
+            <hr />
+            <input type="submit" value="Subir" class="btn btn-outline-success" />
+        }
+            
+            <h6>@ViewBag.Msg</h6>
+            <h6>@ViewBag.ErrorCodigo</h6>
+        </div>
