@@ -119,7 +119,7 @@ namespace ProyectoMicroSQL.Controllers
                         case "CREATE TABLE\r":
                             
                             Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro> arbolB = new Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>();
-
+                                Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro> arbolBPlus = new Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>();
                             if(Data.Instancia.Arboles.ContainsKey(nombreTabla))
                             {
                                 ViewBag.MensajeError = "TABLA YA EXISTENTE";
@@ -128,6 +128,7 @@ namespace ProyectoMicroSQL.Controllers
                             else
                             {
                                 Data.Instancia.Arboles.Add(nombreTabla, arbolB);
+                                Data.Instancia.ArbolesPlus.Add(nombreTabla, arbolBPlus);
 
                                 if (instrucciones[2] == "(\r")
                                 {
@@ -183,14 +184,46 @@ namespace ProyectoMicroSQL.Controllers
                         case "FROM\r":
 
                             break;
-                        case "DELETE\r":
-
+                        case "DELETE FROM\r":
+                                Estructuras_de_Datos.Registro reg = new Estructuras_de_Datos.Registro();
+                                if (Data.Instancia.Arboles.ContainsKey(nombreTabla))
+                                {
+                                    if (instrucciones.Length <= 3)
+                                    {
+                                        Data.Instancia.Arboles[nombreTabla].Recorrido(Data.Instancia.Arboles[nombreTabla].Raiz);
+                                        Data.Instancia.ArbolesBPlus[nombreTabla].Recorrido(Data.Instancia.ArbolesBPlus[nombreTabla].root);
+                                        
+                                    }
+                                    else
+                                    {
+                                        string[] separador = instrucciones[instrucciones.Length - 1].Split(' ');
+                                        
+                                        var indice = int.Parse(separador[2]);
+                                        reg.IDPrimaryKey = indice;
+                                        Data.Instancia.Arboles[nombreTabla].Eliminar(reg, Data.Instancia.Arboles[nombreTabla].Raiz);
+                                        Data.Instancia.ArbolesBPlus[nombreTabla].Eliminar(reg);
+                                    }
+                                }
+                                else
+                                {
+                                    ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
+                                }
+                                
+                            }
                             break;
-                        case "WHERE\r":
-
-                            break;
+                        
                         case "DROP TABLE\r":
-
+                            {
+                                if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && Data.Instancia.ArbolesBPlus.ContainsKey(nombreTabla))
+                                {
+                                    Data.Instancia.Arboles.Remove(nombreTabla);
+                                    Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
+                                }
+                                else
+                                {
+                                    ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
+                                }
+                            }
                             break;
                         case "INSERT INTO\r":
                             if(Data.Instancia.Arboles.ContainsKey(nombreTabla))
@@ -257,6 +290,7 @@ namespace ProyectoMicroSQL.Controllers
                                         }
                                         Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
                                         Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg);
+                                        Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg);
                                         Data.Instancia.Arboles[nombreTabla].Recorrido(Data.Instancia.Arboles[nombreTabla].Raiz);
                                         Data.Instancia.Arboles[nombreTabla].EscrituraTXT(Data.Instancia.Arboles[nombreTabla].ListaAux);
                                         ViewBag.MensajeError = "Insercion exitosa en " + nombreTabla;
