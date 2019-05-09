@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,6 +24,12 @@ namespace ProyectoMicroSQL.Controllers
         {
             return RedirectToAction("Index");
         }
+
+        public ActionResult Grid()
+        {
+            return View();
+        }
+
 
         public ActionResult CodigoSQL()
         {
@@ -89,9 +95,9 @@ namespace ProyectoMicroSQL.Controllers
 
         static List<int> Codigobloque1 = new List<int>();
         static List<int> Codigobloque2 = new List<int>();
-
+        static List<int> ids = new List<int>();
         public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
-
+        static string NTabla = "";
         public void Instrucciones(string Key, string[] instrucciones)
         {
             string nombreTabla = "";
@@ -107,7 +113,7 @@ namespace ProyectoMicroSQL.Controllers
                     nombreTabla = instrucciones[1];
                     string[] aux = nombreTabla.Split('\r');
                     nombreTabla = aux[0];
-
+                    Data.Instancia.NTabla = nombreTabla;
                     switch (Key)
                     {
                         case "CREATE TABLE\r":
@@ -140,6 +146,7 @@ namespace ProyectoMicroSQL.Controllers
                                         }
 
                                         linea = linea[0].Split(' ');
+                                        Data.Instancia.ListaVariables.Add(linea[0]);
                                         switch (linea[1])
                                         {
                                             case "INT":
@@ -222,25 +229,38 @@ namespace ProyectoMicroSQL.Controllers
                                 }
                                 try
                                 {
-                                    Estructuras_de_Datos.Registro Reg = new Estructuras_de_Datos.Registro();
-                                    for (int i = 0; i < VariablesAAgregar.Count; i++)
+                                    int idRepetido = int.Parse(DatosDeVariables[0]);
+                                    Estructuras_de_Datos.Registro registroID = new Estructuras_de_Datos.Registro();
+                                    registroID.IDPrimaryKey = idRepetido;
+                                    if (Data.Instancia.Arboles[nombreTabla].BusquedaIDIgual(registroID, Data.Instancia.Arboles[nombreTabla].Raiz) == 0)
                                     {
-                                        if (VariablesAAgregar.Count == DatosDeVariables.Count && info.Variables.ContainsKey(VariablesAAgregar[i]) && VariablesAAgregar.Count == info.Variables.Count)
+                                        ViewBag.MensajeError = "ID de registro repetido, cambie el ID para su registro correcto";
+                                        break;
+                                    }else
+                                    {
+                                        Estructuras_de_Datos.Registro Reg = new Estructuras_de_Datos.Registro();
+                                        for (int i = 0; i < VariablesAAgregar.Count; i++)
                                         {
-                                            var LAux = info.Variables[VariablesAAgregar[i]];
-                                            LAux.Add(DatosDeVariables[i]);
-                                            Reg.Valores.Add(DatosDeVariables[i]);
-                                            if(i == 0) { Reg.Valores.Remove(Reg.Valores[i]); }
+                                            if (VariablesAAgregar.Count == DatosDeVariables.Count && info.Variables.ContainsKey(VariablesAAgregar[i]) && VariablesAAgregar.Count == info.Variables.Count)
+                                            {
+                                                var LAux = info.Variables[VariablesAAgregar[i]];
+                                                LAux.Add(DatosDeVariables[i]);
+                                                Reg.Valores.Add(DatosDeVariables[i]);
+                                                Data.Instancia.reg.Valores.Add(DatosDeVariables[i]);
+                                                if (i == 0) { Reg.Valores.Remove(Reg.Valores[i]); }
+                                            }
+                                            else
+                                            {
+                                                ViewBag.MensajeError = "Falto una variable o excedio la cantidad";
+                                                break;
+                                            }
                                         }
-                                        else
-                                        {
-                                            ViewBag.MensajeError = "Falto una variable o excedio la cantidad";
-                                            break;
-                                        }
+                                        Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
+                                        Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg);
+                                        Data.Instancia.Arboles[nombreTabla].Recorrido(Data.Instancia.Arboles[nombreTabla].Raiz);
+                                        Data.Instancia.Arboles[nombreTabla].EscrituraTXT(Data.Instancia.Arboles[nombreTabla].ListaAux);
+                                        ViewBag.MensajeError = "Insercion exitosa en " + nombreTabla;
                                     }
-                                    Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
-                                    Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg);
-                                    ViewBag.MensajeError = "Insercion exitosa en " + nombreTabla;
                                 }
                                 catch
                                 {
