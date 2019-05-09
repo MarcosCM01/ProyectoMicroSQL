@@ -12,17 +12,17 @@ namespace Estructuras_de_Datos
         public NodoB<T> Padre { get; set; }
         public List<NodoB<T>> Hijos { get; set; }
 
-        public List<Info> Valores { get; set; }
-
         public int id { get; set; }
         public int max { get; set; }
         public int min { get; set; }
 
+
+        public List<Registro> Valores { get; set; }
         public NodoB()
         {
             Padre = null;
             Hijos = new List<NodoB<T>>();
-            Valores = new List<Info>();
+            Valores = new List<Registro>();
             id = 0;
             max = 0;
             min = 0;

@@ -64,7 +64,7 @@ namespace Estructuras_de_Datos
         }
 
 
-        public void Insertar(NodoB<T> Nodo, Info valor)
+        public void Insertar(NodoB<T> Nodo, Registro valor)
         {
             if (Raiz.id == 0)
             {
@@ -167,7 +167,7 @@ namespace Estructuras_de_Datos
                 CreandoNodo(izq, Nodo);
                 CreandoNodo(der, izq);
 
-                Info val = Nodo.Valores[Nodo.min];
+                Registro val = Nodo.Valores[Nodo.min];
 
                 HijosDeHijos(Nodo, izq, 0, Nodo.min);
                 HijosDeHijos(Nodo, der, Nodo.min + 1, Nodo.max + 1);
@@ -200,7 +200,7 @@ namespace Estructuras_de_Datos
             Hijo.Padre = Padre;
         }
 
-        public int PosicionHijo(NodoB<T> Nodo, Info valor)
+        public int PosicionHijo(NodoB<T> Nodo, Registro valor)
         {
             if (Nodo.Valores.Count == 1)
             {
@@ -230,15 +230,15 @@ namespace Estructuras_de_Datos
             }
         }
 
-        public void AgregarYOrdenarNodo(Info valor, NodoB<T> Nodo)
+        public void AgregarYOrdenarNodo(Registro valor, NodoB<T> Nodo)
         {
             Nodo.Valores.Add(valor);
             Nodo.Valores.Sort((x, y) => x.CompareTo(y));
         }
 
 
-        static Info val;
-        public Info Busqueda(Info valor, NodoB<T> Nodo)
+        static Registro val;
+        public Registro Busqueda(Registro valor, NodoB<T> Nodo)
         {
             bool BEncontrado = false;
             foreach (var item in Nodo.Valores)
@@ -288,7 +288,7 @@ namespace Estructuras_de_Datos
         static NodoB<T> NodoAModificar = new NodoB<T>();
         static NodoB<T> NodoDar = new NodoB<T>();
 
-        public void Eliminar(Info valor, NodoB<T> Nodo)
+        public void Eliminar(Registro valor, NodoB<T> Nodo)
         {
             int indice = 0;
             bool NodoInicial = false;
@@ -300,13 +300,10 @@ namespace Estructuras_de_Datos
                     BEncontrado = true;
                     if (ExisteNodosHijo(Nodo) == true)
                     {
-                        //if (contador == 0)
-                        //{
                         indice = i;  //INDICE DE VALOR A SUSTITUIR
                         NodoAModificar = Nodo; //NODO A SUSTITUIR VALOR DE NODO MAS IZQUIERDO DEL HIJO DERECHO
                         contador++; //revisar para que se usa
                         NodoInicial = true;
-                        //}
 
                         NodoDar = MasIzquierdoDeDerecho(indice, Nodo, false);
 

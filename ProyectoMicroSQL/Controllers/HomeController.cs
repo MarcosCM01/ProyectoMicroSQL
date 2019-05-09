@@ -111,7 +111,6 @@ namespace ProyectoMicroSQL.Controllers
                     {
                         case "CREATE TABLE\r":
                             Estructuras_de_Datos.ArbolB<Info> arbolB = new Estructuras_de_Datos.ArbolB<Info>();
-                            Estructuras_de_Datos.NodoB<Info> Nodo = arbolB.Raiz;
 
 
                             Info info = new Info();

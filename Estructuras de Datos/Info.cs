@@ -10,7 +10,6 @@ namespace Estructuras_de_Datos
     {
 
         public Dictionary<string, object> Variables { get; set; }
-
         public int ContadorInt { get; set; }
         public int ContadorChar { get; set; }
         public int ContadorDT { get; set; }
