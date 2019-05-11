@@ -4,6 +4,19 @@
 
 <h2>Menu principal MicroSQL</h2>
 
+<h4>@ViewBag.Msg</h4>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Cargar Diccionario de palabras</h2>
+    <h4 class="display-3"> Cargue su archivo con extension ".init" para almacenar palabras reservadas en otro idioma.</h4>
+    <p class="lead">
+
+        <h4><button type="button" onclick="location.href= '@Url.Action("Carga","Home")'">CARGAR DICCIONARIO</button></h4>
+    </p>
+    
+</div>
+
+
 <div class="jumbotron">
     <h2 class="display-3"> PROYECTO MICRO SQL: Cargar Tablas</h2>
     <h4 class="display-3"> Cargue su tabla con extension ".ArbolB" para poder ver la informacion almacenada.</h4>
@@ -13,7 +26,6 @@
         <h4><button type="button" onclick="location.href= '@Url.Action("CargarTablas","Home")'">CARGAR TABLA</button></h4>
 
     </p>
-    <h6>@ViewBag.Msg</h6>
 </div>
 
 
@@ -26,7 +38,6 @@
         <h4><button type="button" onclick="location.href= '@Url.Action("CodigoSQL","Home")'">CODIGO SQL </button></h4>
 
     </p>
-    <h6>@ViewBag.Msg</h6>
 </div>
 
 <div class="jumbotron">
@@ -38,7 +49,6 @@
         <h4><button type="button" onclick="location.href= '@Url.Action("Grid","Home")'">GRID </button></h4>
 
     </p>
-    <h6>@ViewBag.Msg</h6>
 </div>
 
 <div class="jumbotron">
@@ -49,7 +59,6 @@
         <h4>VER RESULTADOS</h4>
 
     </p>
-    <h6>@ViewBag.Msg</h6>
 </div>
 
 
@@ -61,7 +70,6 @@
         <h4><button type="button" onclick="location.href= '@Url.Action("Personalizar","Home")'">PERSONALIZAR DICCIONARIO </button></h4>
 
     </p>
-    <h6>@ViewBag.Msg</h6>
 </div>
 
 
@@ -74,5 +82,4 @@
     <p>@ViewBag.Mensaje</p>
 
     <
-    <h6>@ViewBag.Msg</h6>
 </div>

@@ -20,18 +20,32 @@ namespace Estructuras_de_Datos
         }
 
 
-        //public void Recorrido(NodoB<T> Nodo)
-        //{
-        //    if (ExisteNodosHijo(Nodo.Hijos[0]) == true)
-        //    {
-        //        Recorrido(Nodo.Hijos[0]);
-        //        for (int i = 0; i < Nodo.Valores.Count; i++)
-        //        {
-        //            ListaAux.Add(Nodo.Valores[i]);
-        //            Recorrido(Nodo.Hijos[i]);
-        //        }
-        //    }
-        //}
+        public void EliminarTodo(NodoB<T> Nodo)
+        {
+            if (ExisteNodosHijo(Nodo) == true)
+            {
+                if (Nodo.Hijos.Count > 0) 
+                {
+                    EliminarTodo(Nodo.Hijos[0]);
+                }
+                for (int i = 0; i < Nodo.Valores.Count; i++)
+                {
+                    Nodo.Valores.Clear();
+                }
+                if (Nodo.Hijos.Count > 0)
+                {
+                    EliminarTodo(Nodo.Hijos[Nodo.Hijos.Count - 1]);
+                }
+                for (int i = 0; i < Nodo.Valores.Count; i++)
+                {
+                    Nodo.Valores.Clear();
+                }
+            }
+            else
+            {
+                Nodo.Valores.Clear();
+            }
+        }
 
         //public void EscrituraTXT(List<T> InfoLista)
         //{
@@ -272,6 +286,39 @@ namespace Estructuras_de_Datos
 
         }
 
+        public int BusquedaIDIgual(Registro valor, NodoB<T> Nodo)
+        {
+            bool BEncontrado = false;
+            foreach (var item in Nodo.Valores)
+            {
+                if (item.IDPrimaryKey.CompareTo(valor.IDPrimaryKey) == 0)
+                {
+                    BEncontrado = true;
+                    val = item;
+                    break;
+                }
+            }
+
+            if (BEncontrado == false && Nodo.Hijos.Count > 0)
+            {
+                NodoB<T> NodoHijo = new NodoB<T>();
+                NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)];
+                return BusquedaIDIgual(valor, NodoHijo);
+            }
+            else if (BEncontrado == true)
+            {
+                return 0;
+            }
+            else if (Nodo.Hijos.Count == 0)
+            {
+                return -1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
         public bool ExisteUnderFlow(NodoB<T> Nodo)
         {
             if (Nodo.Valores.Count < Nodo.min)
@@ -329,7 +376,7 @@ namespace Estructuras_de_Datos
                         Nodo = NodoAModificar;
                     }
 
-                    if (ExisteUnderFlow(Nodo) == true)
+                    if (ExisteUnderFlow(Nodo) == true && Nodo.Padre != null)
                     {
                         //Llamo a un metodo para ver si un hermano VECINO puede prestar
                         VerificarHermanos(Nodo.Padre, Nodo);

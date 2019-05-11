@@ -8,13 +8,19 @@
 <p>
     @Html.ActionLink("Regresar a Menu Principal", "Menu")
 </p>
-<p>@ViewBag.Error</p>
 
-    @using (Html.BeginForm("Modificar", "Home", FormMethod.Post))
-    {
-        <input type="text" name="NewWord" id="NewWord" />
-        <input type="submit" value="Modificar" class="btn btn-outline-success" />
-    }
+<p style="color:red;">@ViewBag.Error</p>
+
+@using (Html.BeginForm("Personalizar", "Home", FormMethod.Post))
+{
+    <p>Palabra reservada a modificar:</p>
+    <input type="text" name="Llave" id="Llave" />
+
+    <p>Nueva palabra reservada en otro idioma:</p>
+    <input type="text" name="NuevaPalabra" id="NuevaPalabra" />
+    <br />
+    <input type="submit" value="Modificar" class="btn btn-outline-success" />
+}
 
 <table class="table table-hover">
     <tr class="table">
@@ -22,21 +28,19 @@
             PALABRA RESERVADA
         </th>
         <th>
-            PALABRA AUX
+            PALABRA RESERVADA EN OTRO IDIOMA
         </th>
-        
     </tr>
 
-    @foreach(var item in ProyectoMicroSQL.Singleton.Data.Instancia.PalabrasReservadas)
+    @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.PalabrasReservadas)
     {
-    <tr class="table">
-        <td>
-            @Html.DisplayFor(modelItem => item.Key)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Value)
-        </td>
-        
-    </tr>
+        <tr class="table">
+            <td>
+                @Html.DisplayFor(modelItem => item.Key)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+        </tr>
     }
 </table>

@@ -9,10 +9,7 @@ namespace ProyectoMicroSQL.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
+        static string diccionarioPredeterminado = "~/Upload/MicroSQL.init";
 
         public ActionResult CargarTablas()
         {
@@ -22,6 +19,7 @@ namespace ProyectoMicroSQL.Controllers
         [HttpPost]
         public ActionResult CargarTablas(HttpPostedFileBase file)
         {
+            ViewBag.Msg = "Archivo cargado con exito";
             return RedirectToAction("Index");
         }
 
@@ -71,11 +69,6 @@ namespace ProyectoMicroSQL.Controllers
             return View();
         }
 
-        public void Separar(string[] instrucciones )
-        {
-
-        }
-
         public void ContadorDeInstrucciones(string[] instrucciones, int posicioninicial, List<int> bloque)
         {
             for (int i = posicioninicial; i < instrucciones.Length; i++)
@@ -113,7 +106,7 @@ namespace ProyectoMicroSQL.Controllers
                     nombreTabla = instrucciones[1];
                     string[] aux = nombreTabla.Split('\r');
                     nombreTabla = aux[0];
-                    Data.Instancia.NTabla = nombreTabla;
+                    //Data.Instancia.NTabla = nombreTabla;
                     switch (Key)
                     {
                         case "CREATE TABLE\r":
@@ -128,7 +121,7 @@ namespace ProyectoMicroSQL.Controllers
                             else
                             {
                                 Data.Instancia.Arboles.Add(nombreTabla, arbolB);
-                                Data.Instancia.ArbolesPlus.Add(nombreTabla, arbolBPlus);
+                                Data.Instancia.ArbolesBPlus.Add(nombreTabla, arbolBPlus);
 
                                 if (instrucciones[2] == "(\r")
                                 {
@@ -190,13 +183,14 @@ namespace ProyectoMicroSQL.Controllers
                                 {
                                     if (instrucciones.Length <= 3)
                                     {
-                                        Data.Instancia.Arboles[nombreTabla].Recorrido(Data.Instancia.Arboles[nombreTabla].Raiz);
-                                        Data.Instancia.ArbolesBPlus[nombreTabla].Recorrido(Data.Instancia.ArbolesBPlus[nombreTabla].root);
+                                        Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
+                                        //Data.Instancia.ArbolesBPlus[nombreTabla].EliminarTodo(Data.Instancia.ArbolesBPlus[nombreTabla].root);
                                         
                                     }
                                     else
                                     {
-                                        string[] separador = instrucciones[instrucciones.Length - 1].Split(' ');
+
+                                        string[] separador = instrucciones[instrucciones.Length - 2].Split(' ');
                                         
                                         var indice = int.Parse(separador[2]);
                                         reg.IDPrimaryKey = indice;
@@ -209,7 +203,7 @@ namespace ProyectoMicroSQL.Controllers
                                     ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
                                 }
                                 
-                            }
+                            
                             break;
                         
                         case "DROP TABLE\r":
@@ -291,8 +285,8 @@ namespace ProyectoMicroSQL.Controllers
                                         Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
                                         Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg);
                                         Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg);
-                                        Data.Instancia.Arboles[nombreTabla].Recorrido(Data.Instancia.Arboles[nombreTabla].Raiz);
-                                        Data.Instancia.Arboles[nombreTabla].EscrituraTXT(Data.Instancia.Arboles[nombreTabla].ListaAux);
+                                        //Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
+                                        //Data.Instancia.Arboles[nombreTabla].EscrituraTXT(Data.Instancia.Arboles[nombreTabla].ListaAux);
                                         ViewBag.MensajeError = "Insercion exitosa en " + nombreTabla;
                                     }
                                 }
@@ -340,29 +334,48 @@ namespace ProyectoMicroSQL.Controllers
         [HttpPost]
         public ActionResult Carga(HttpPostedFileBase file)
         {
-            if (file != null)
+            try
             {
-                Upload(file);
-                return RedirectToAction("Upload");
+                ViewBag.Msg = "Carga exitosa";
+                if (file != null)
+                {
+                    Upload(file);
+                    return RedirectToAction("Upload");
 
+                }
+                else
+                {
+                    ViewBag.Msg = "ERROR AL CARGAR EL ARCHIVO, INTENTE DE NUEVO";
+                    return View();
+                }
             }
-            else
+            catch
             {
-                ViewBag.Msg = "ERROR AL CARGAR EL ARCHIVO, INTENTE DE NUEVO";
-                return View();
+                return ViewBag.Msg = "ERROR AL CARGAR EL ARCHIVO, INTENTE DE NUEVO";
             }
+            
         }
 
+        
         public ActionResult Upload (HttpPostedFileBase file)
         {
             string model = "";
             if (file != null && file.ContentLength > 0)
             {
-                model = Server.MapPath("~/Upload/") + file.FileName;
+                model = Server.MapPath("~/Upload/") + file.FileName + ".ini";
                 file.SaveAs(model);
-                Data.Instancia.LecturaCSV(model);
-                ViewBag.Msg = "Carga del archivo correcta";
-                return RedirectToAction("Menu"); //VERIFICAR
+                if(Data.Instancia.LecturaCSV(model) == 1)
+                {
+                    ViewBag.Msg = "Carga del archivo correcta";
+                    return RedirectToAction("Menu");
+                }
+                else
+                {
+                    ViewBag.Msg = "Carga del archivo incorrecta";
+                    return View("Carga");
+                }
+                
+                 //VERIFICAR
             }
             else
             {
@@ -379,28 +392,48 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Personalizar()
         {
-            return View(Data.Instancia.PalabrasReservadas);
+            if(Data.Instancia.PalabrasReservadas.Count == 0)
+            {
+                ViewBag.Msg = "No se ha cargado diccionario aun";
+                return RedirectToAction("Menu");
+            }
+            else
+            {
+                return View(Data.Instancia.PalabrasReservadas);
+            }
         }
 
-        public ActionResult Modificar(string NewWord)
+        [HttpPost]
+        public ActionResult Personalizar(FormCollection collection)
         {
             try
             {
-                ViewBag.Error = "";
-                string[] array = NewWord.Split(',');
-                string key = array[0].Trim();
-                string value = array[1].Trim();
-
-                Data.Instancia.PalabrasReservadas[key] = value;
-
-                return View("Personalizar");
+                string llave = collection["Llave"].Trim() + "\r";
+                string Valor = collection["NuevaPalabra"].Trim() + "\r";
+                if (Data.Instancia.PalabrasReservadas.ContainsKey(llave))
+                {
+                    Data.Instancia.PalabrasReservadas[llave] = Valor;
+                    ViewBag.Error = "Modificacion correcta";
+                }
+                else
+                {
+                    ViewBag.Error = "Palabra reservada no encontrada, revise de nuevo";
+                }
+                return View(Data.Instancia.PalabrasReservadas);
             }
             catch
             {
-                ViewBag.Error = "Mala escritura";
-                return View("Personalizar");
+                ViewBag.Error = "ERROR";
+                return View();
             }
-            
+        }
+
+
+
+        public string EliminandoEnter(string llave)
+        {
+            string[] llaveDepurada = llave.Split('\r');
+            return llaveDepurada[0].Trim();
         }
 
         public ActionResult Reestablecer()
