@@ -5,22 +5,31 @@
 
 <h2>Personalizar Diccionario</h2>
 
+
 <p>
     @Html.ActionLink("Regresar a Menu Principal", "Menu")
 </p>
 
 <p style="color:red;">@ViewBag.Error</p>
 
-@using (Html.BeginForm("Personalizar", "Home", FormMethod.Post))
-{
-    <p>Palabra reservada a modificar:</p>
-    <input type="text" name="Llave" id="Llave" />
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Escriba la palabra reservada que quiera cambiar</h2>
+    <h4 class="display-3"> Esta será reemplazada por la palabra nueva que usted escoja.</h4>
+    <p class="lead">
+        @using (Html.BeginForm("Personalizar", "Home", FormMethod.Post))
+        {
+        <p>Palabra reservada a modificar:</p>
+        <input type="text" name="Llave" id="Llave" />
 
-    <p>Nueva palabra reservada en otro idioma:</p>
-    <input type="text" name="NuevaPalabra" id="NuevaPalabra" />
-    <br />
-    <input type="submit" value="Modificar" class="btn btn-outline-success" />
-}
+        <p>Nueva palabra reservada en otro idioma:</p>
+        <input type="text" name="NuevaPalabra" id="NuevaPalabra" />
+        <br />
+        <input type="submit" value="Modificar" class="btn btn-outline-success" />
+    }
+
+    </div>
+
+
 
 <table class="table table-hover">
     <tr class="table">

@@ -41,8 +41,8 @@
 </div>
 
 <div class="jumbotron">
-    <h2 class="display-3"> PROYECTO MICRO SQL: Grid</h2>
-    <h4 class="display-3"> Vea las tablas creadas por usted de manera ordeada</h4>
+    <h2 class="display-3"> PROYECTO MICRO SQL: Datos de ultima Tabla utilizada</h2>
+    <h4 class="display-3"> Vea los datos de la ultima tabla a la cual usted tuvo interaccion.</h4>
     <p class="lead">
 
         <h4>GRID</h4>
@@ -52,12 +52,12 @@
 </div>
 
 <div class="jumbotron">
-    <h2 class="display-3"> PROYECTO MICRO SQL: Resultados</h2>
-    <h4 class="display-3"> Vea los resultados de sus datos</h4>
+    <h2 class="display-3"> PROYECTO MICRO SQL: Tablas</h2>
+    <h4 class="display-3"> Vea las tablas creadas por usted y acceda a ellas.</h4>
     <p class="lead">
 
-        <h4>VER RESULTADOS</h4>
-
+        <h4>VER TABLAS</h4>
+        <h4><button type="button" onclick="location.href= '@Url.Action("VerTablas","Home")'">Ver Tablas</button></h4>
     </p>
 </div>
 
@@ -80,6 +80,4 @@
 
         <h4><button type="button" onclick="location.href= '@Url.Action("Reestablecer","Home")'">REESTABLECER DICCIONARIO </button></h4>
     <p>@ViewBag.Mensaje</p>
-
-    <
 </div>

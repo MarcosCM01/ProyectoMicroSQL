@@ -11,11 +11,12 @@ namespace Estructuras_de_Datos
     {
         public NodoB<T> Raiz { get; set; }
         public int siguienteposicion { get; set; }
-        public List<string> ListaAux { get; set; }
+        public List<string> ListaVariables { get; set; }
 
         public ArbolB()
         {
             Raiz = new NodoB<T>();
+            ListaVariables = new List<string>();
             siguienteposicion = 2;
         }
 
@@ -78,19 +79,32 @@ namespace Estructuras_de_Datos
         }
 
 
-        public void Insertar(NodoB<T> Nodo, Registro valor)
+        public int Insertar(NodoB<T> Nodo, Registro valor)
         {
-            if (Raiz.id == 0)
+            int IDIguales = BusquedaIDIgual(valor, Raiz);
+            if(IDIguales == 1)
+            {
+                return 1;
+            }
+            else if (Raiz.id == 0)
             {
                 Raiz.AsignarGrado(Raiz, 5);
                 Raiz.Valores.Add(valor);
                 Raiz.id = 1;
                 Nodo = Raiz;
+                return 0;
             }
             //ES HOJA
             else if (ExisteNodosHijo(Nodo) == false)
             {
                 AgregarYOrdenarNodo(valor, Nodo);
+
+                if (ExisteEspacio(Nodo) == false)
+                {
+                    Separar(Nodo);
+                }
+
+                return 0;
             }
             //NO ES HOJA
             else if (ExisteNodosHijo(Nodo) == true)
@@ -98,12 +112,22 @@ namespace Estructuras_de_Datos
                 var NodoHijo = new NodoB<T>();
                 NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)]; //BUSCA POSICION CORRESPONDIENTE
                 Insertar(NodoHijo, valor);
+                if (ExisteEspacio(Nodo) == false)
+                {
+                    Separar(Nodo);
+                }
+                return 0;
+            }
+            else
+            {
+                if (ExisteEspacio(Nodo) == false)
+                {
+                    Separar(Nodo);
+                }
+                return 0;
             }
 
-            if (ExisteEspacio(Nodo) == false)
-            {
-                Separar(Nodo);
-            }
+            
         }
 
 
@@ -307,15 +331,15 @@ namespace Estructuras_de_Datos
             }
             else if (BEncontrado == true)
             {
-                return 0;
+                return 1;
             }
             else if (Nodo.Hijos.Count == 0)
             {
-                return -1;
+                return 0;
             }
             else
             {
-                return -1;
+                return 0;
             }
         }
 

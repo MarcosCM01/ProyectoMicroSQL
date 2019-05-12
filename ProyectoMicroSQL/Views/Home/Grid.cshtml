@@ -1,28 +1,29 @@
 ﻿
 @{
-    ViewBag.Title = "Grid";
+    ViewBag.Title = "Grid de Ultima tabla";
 }
 
-<h2>Grid</h2>
+    <h2>@ViewBag.Title</h2>
 
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IDPrimaryKey)
+        </th>
+        <th></th>
+    </tr>
 
-<table class="table table-hover">
-    <tr class="table">
-        @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.ListaVariables)
+@foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.Arboles[ProyectoMicroSQL.Singleton.Data.Instancia.nombreTabla]) {
+    <tr>
+        @for (int j = 0; j < ProyectoMicroSQL.Singleton.Data.Instancia.Arboles[]; j++)
         {
-            <th>
-                @item
-            </th>
 
         }
+        <td>
+            @Html.DisplayFor(modelItem => item.IDPrimaryKey)
+        </td>
+
     </tr>
-    <tr class="table">
-        @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.reg.Valores)
-        {
-            <td>
-                @item
-            </td>
-        }
-    </tr>
-    
-    </table>
+}
+
+</table>

@@ -22,10 +22,13 @@ namespace ProyectoMicroSQL.Singleton
         }
 
         public Dictionary<string, string> PalabrasReservadas = new Dictionary<string, string>();
+
         public List<string> ListaV = new List<string>();
         public List<string> ListaK = new List<string>();
         public List<string> ListaVariables = new List<string>();
-        public string NTabla;
+
+        public string nombreTabla { get; set; }
+
         public Estructuras_de_Datos.Registro reg = new Estructuras_de_Datos.Registro();
 
 
@@ -48,7 +51,7 @@ namespace ProyectoMicroSQL.Singleton
 
                         for (int i = 0; i < infolinea.Length; i++)
                         {
-                            infolinea[i] = infolinea[i] + "\r";
+                            infolinea[i] = infolinea[i];
                         }
 
                         PalabrasReservadas.Add(infolinea[0], infolinea[1]);
