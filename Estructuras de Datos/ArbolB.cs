@@ -20,6 +20,38 @@ namespace Estructuras_de_Datos
             siguienteposicion = 2;
         }
 
+        public static bool ArbolVacio(NodoB<T> nodo) => nodo == null;
+        public static List<NodoB<T>> ListaNodos = new List<NodoB<T>>();
+
+        public void ExistenElementosEnLista()
+        {
+            if(ListaNodos.Count > 0)
+            {
+                ListaNodos.Clear();
+            }
+        }
+        public void AlmacenandoNodosEnLista(NodoB<T> Nodo)
+        {
+            if (ExisteNodosHijo(Nodo) == true)
+            {
+                AlmacenandoNodosEnLista(Nodo.Hijos[0]);
+                ListaNodos.Add(Nodo);
+                
+                for (int i = 1; i < Nodo.Hijos.Count; i++)
+                {
+                    AlmacenandoNodosEnLista(Nodo.Hijos[i]);
+                } 
+            }
+            else
+            {
+                ListaNodos.Add(Nodo);
+            }
+        }
+
+        public List<NodoB<T>> RetornandoListaNodos()
+        {
+            return ListaNodos;
+        }
 
         public void EliminarTodo(NodoB<T> Nodo)
         {

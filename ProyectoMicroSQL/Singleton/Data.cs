@@ -28,14 +28,17 @@ namespace ProyectoMicroSQL.Singleton
         public List<string> ListaVariables = new List<string>();
 
         public string nombreTabla { get; set; }
+        public List<string> NombresTabla = new List<string>();
 
         public Estructuras_de_Datos.Registro reg = new Estructuras_de_Datos.Registro();
 
+        public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> listaNodos = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
 
         public Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>>();
         public Dictionary<string, Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>> ArbolesBPlus = new Dictionary<string, Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>>();
         public Estructuras_de_Datos.Info Informacion = new Estructuras_de_Datos.Info();
 
+        public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> NodosAMostrar = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
 
         public int LecturaCSV(string path)
         {

@@ -5,7 +5,7 @@
     <div class="jumbotron">
         <h2 class="display-3"> PROYECTO MICRO SQL: Comandos SQL</h2>
         <h4 class="display-3"> Escribe tus acciones, modifica tus tablas, añade, elimina, etc.</h4>
-        <h3>@ViewBag.MensajeError</h3>
+        <h5>@ViewBag.MensajeError</h5>
         <p class="lead">
             @using (Html.BeginForm("CodigoSQL", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
@@ -20,5 +20,4 @@
         }
             
             <h6>@ViewBag.Msg</h6>
-            <h6>@ViewBag.ErrorCodigo</h6>
         </div>

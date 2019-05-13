@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoMicroSQL.Singleton;
+using Newtonsoft.Json;
 
 namespace ProyectoMicroSQL.Controllers
 {
@@ -21,9 +22,18 @@ namespace ProyectoMicroSQL.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Grid()
+        public ActionResult MostrarTablas()
         {
             return View();
+        }
+
+        public ActionResult Grid()
+        {
+            string llave = Data.Instancia.nombreTabla;
+            Data.Instancia.Arboles[llave].ExistenElementosEnLista();
+            Data.Instancia.Arboles[llave].AlmacenandoNodosEnLista(Data.Instancia.Arboles[llave].Raiz);
+            Data.Instancia.listaNodos = Data.Instancia.Arboles[llave].RetornandoListaNodos();
+            return View(Data.Instancia.listaNodos);
         }
 
         public ActionResult VerTablas()
@@ -32,6 +42,77 @@ namespace ProyectoMicroSQL.Controllers
         }
         public ActionResult CodigoSQL()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CodigoSQL(string codigo)
+        {
+            string[] lineas2 = codigo.Trim().Split('\n');
+            List<string> lineas = new List<string>();
+
+            SeparandoLineas(lineas, lineas2);
+
+            List<string> Bloques = new List<string>();
+            int cantidadBloques = 0;
+
+            if (lineas.Contains("GO") || lineas.Contains("GO\r") && (lineas.Last() == "GO" || lineas.Last() == "GO\r"))
+            {
+                Bloques = SeparandoInstrucciones(codigo);
+                cantidadBloques = Bloques.Count;
+            }
+            
+            else
+            {
+                cantidadBloques = 1;
+            }
+
+            string Key;
+            if (lineas.Last() != "GO" && lineas.Last() != "GO\r")
+            {
+                ViewBag.MensajeError = "Falta de 'GO' al finalizar instrucciones por bloque";
+            }
+            else if(ViewBag.MensajeError = "ERROR DE SINTAXIS")
+            {
+                try
+                {
+                    for (int i = 0; i < cantidadBloques; i++)
+                    {
+                        string[] lineas1 = Bloques[i].Split('\r');
+                        lineas.Clear();
+                        SeparandoLineas(lineas, lineas1);
+
+
+                        if (Data.Instancia.PalabrasReservadas.ContainsValue(lineas[0]) == true)
+                        {
+                            Key = lineas[0];
+
+                            foreach (var item in Data.Instancia.PalabrasReservadas)
+                            {
+                                if (item.Value == Key)
+                                {
+                                    Instrucciones(item.Key, lineas);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (Data.Instancia.PalabrasReservadas.ContainsKey(lineas[0]) == true)
+                        {
+                            Key = lineas[0];
+                            Instrucciones(Key, lineas);
+                        }
+                        else
+                        {
+                            ViewBag.MensajeError = "Se escribio incorrectamente un comando";
+                        }
+                    }
+                }
+                catch
+                {
+                    ViewBag.MensajeError = "Se escribio incorrectamente un comando o falto comando para finalizar 'GO'";
+                }
+                
+            }
             return View();
         }
 
@@ -47,6 +128,10 @@ namespace ProyectoMicroSQL.Controllers
                 {
                     contadorGO++;
                 }
+            }
+            if(contador > 1)
+            {
+                contadorGO--;
             }
 
             for (int i = 0; i < contadorGO; i++)
@@ -76,64 +161,6 @@ namespace ProyectoMicroSQL.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult CodigoSQL(string codigo)
-        {
-            string[] lineas2 = codigo.Trim().Split('\n');
-            List<string> lineas = new List<string>();
-
-            SeparandoLineas(lineas, lineas2);
-
-            List<string> Bloques = new List<string>();
-            int cantidadBloques = 0;
-
-            if (lineas.Contains("GO") || lineas.Contains("GO\r"))
-            {
-                Bloques = SeparandoInstrucciones(codigo);
-                cantidadBloques = Bloques.Count;
-            }
-            else
-            {
-                cantidadBloques = 1;
-            }
-
-            string Key;
-            for (int i = 0; i < cantidadBloques; i++)
-            {
-                string[] lineas1 = Bloques[i].Split('\r');
-                lineas.Clear();
-                SeparandoLineas(lineas, lineas1);
-
-                
-                    if (Data.Instancia.PalabrasReservadas.ContainsValue(lineas[0]) == true)
-                    {
-                        Key = lineas[0];
-
-                        foreach (var item in Data.Instancia.PalabrasReservadas)
-                        {
-                            if (item.Value == Key)
-                            {
-                                Instrucciones(item.Key, lineas);
-                                break;
-                            }
-                        }
-                    }
-                    else if (Data.Instancia.PalabrasReservadas.ContainsKey(lineas[0]) == true)
-                    {
-                        Key = lineas[0];
-                        Instrucciones(Key, lineas);
-                    }
-
-                    else
-                    {
-                        ViewBag.ErrorCodigo = "Se escribio incorrectamente un comando";
-                    }
-                
-                
-            }
-            
-            return View();
-        }
 
         public void ContadorDeInstrucciones(List<string> instrucciones, int posicioninicial, List<int> bloque)
         {
@@ -156,6 +183,7 @@ namespace ProyectoMicroSQL.Controllers
         static List<int> Codigobloque2 = new List<int>();
         static List<int> ids = new List<int>();
         public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
+
         public void Instrucciones(string Key, List<string> instrucciones)
         {
             string nombreTabla = "";
@@ -181,53 +209,13 @@ namespace ProyectoMicroSQL.Controllers
 
                             break;
                         case "DELETE FROM":
-                            Estructuras_de_Datos.Registro reg = new Estructuras_de_Datos.Registro();
-                            if (Data.Instancia.Arboles.ContainsKey(nombreTabla))
-                            {
-                                if (instrucciones.Count <= 3)
-                                {
-                                    Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
-                                }
-                                else
-                                {
-
-                                    string[] separador = instrucciones[instrucciones.Count - 2].Split(' ');
-
-                                    var indice = int.Parse(separador[2]);
-                                    reg.IDPrimaryKey = indice;
-                                    Data.Instancia.Arboles[nombreTabla].Eliminar(reg, Data.Instancia.Arboles[nombreTabla].Raiz);
-                                    //Data.Instancia.ArbolesBPlus[nombreTabla].Eliminar(reg);
-                                }
-                            }
-                            else
-                            {
-                                ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
-                            }
-
-
+                            EliminarEnTabla(nombreTabla, instrucciones);
                             break;
-
                         case "DROP TABLE":
-                            {
-                                if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && Data.Instancia.ArbolesBPlus.ContainsKey(nombreTabla))
-                                {
-                                    Data.Instancia.Arboles.Remove(nombreTabla);
-                                    Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
-                                }
-                                else
-                                {
-                                    ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
-                                }
-                            }
+                            DropTable(nombreTabla);
                             break;
                         case "INSERT INTO":
                             InsertarEnTabla(nombreTabla, instrucciones);
-                            break;
-                        case "VALUES":
-
-                            break;
-                        case "GO":
-
                             break;
                         default:
                             ViewBag.MensajeError = "Palabra reservada no reconocible";
@@ -253,11 +241,13 @@ namespace ProyectoMicroSQL.Controllers
             }
             else
             {
-                Data.Instancia.Arboles.Add(nombreTabla, arbolB);
-                Data.Instancia.ArbolesBPlus.Add(nombreTabla, arbolBPlus);
-
                 if (instrucciones[2] == "(")
                 {
+                    Data.Instancia.NombresTabla.Add(nombreTabla);
+                    Data.Instancia.Arboles.Add(nombreTabla, arbolB);
+                    Data.Instancia.ArbolesBPlus.Add(nombreTabla, arbolBPlus);
+                    Codigobloque1.Clear();
+                    Codigobloque2.Clear();
                     ContadorDeInstrucciones(instrucciones, 0, Codigobloque1);
                     for (int i = Codigobloque1[0] + 1; i < Codigobloque1[1]; i++)
                     {
@@ -271,6 +261,8 @@ namespace ProyectoMicroSQL.Controllers
                         linea = linea[0].Split(' ');
                         Data.Instancia.ListaVariables.Add(linea[0]);
                         Data.Instancia.Arboles[nombreTabla].ListaVariables.Add(linea[0]);
+                        info.Variables.Clear();
+                        info.ContadorChar = info.ContadorDT = info.ContadorChar = 0;
                         switch (linea[1])
                         {
                             case "INT":
@@ -293,10 +285,15 @@ namespace ProyectoMicroSQL.Controllers
                                 break;
                         }
                     }
+                    
                     ViewBag.MensajeError = nombreTabla + ": Creacion exitosa de la tabla";
                 }
                 else
                 {
+                    Data.Instancia.NombresTabla.Remove(nombreTabla);
+                    Data.Instancia.Arboles.Remove(nombreTabla);
+                    Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
+
                     ViewBag.MensajeError = "Sintaxis incorrecta: '(' omitido al inicio";
                 }
             }
@@ -371,6 +368,45 @@ namespace ProyectoMicroSQL.Controllers
                     ViewBag.MensajeError = "ERROR DE SINTAXIS";
                 }
 
+            }
+            else
+            {
+                ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
+            }
+        }
+
+        public void EliminarEnTabla(string nombreTabla, List<string> instrucciones)
+        {
+            Estructuras_de_Datos.Registro reg = new Estructuras_de_Datos.Registro();
+            if (Data.Instancia.Arboles.ContainsKey(nombreTabla))
+            {
+                if (instrucciones.Count <= 3)
+                {
+                    Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
+                }
+                else
+                {
+                    string[] separador = instrucciones[instrucciones.Count - 2].Split(' ');
+
+                    var indice = int.Parse(separador[2]);
+                    reg.IDPrimaryKey = indice;
+                    Data.Instancia.Arboles[nombreTabla].Eliminar(reg, Data.Instancia.Arboles[nombreTabla].Raiz);
+                    //Data.Instancia.ArbolesBPlus[nombreTabla].Eliminar(reg);
+                }
+            }
+            else
+            {
+                ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
+            }
+        }
+
+        public void DropTable(string nombreTabla)
+        {
+            if (Data.Instancia.Arboles.ContainsKey(nombreTabla))
+            {
+                Data.Instancia.Arboles.Remove(nombreTabla);
+                Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
+                ViewBag.MensajeError = nombreTabla + ": Eliminación de tabla correcta";
             }
             else
             {

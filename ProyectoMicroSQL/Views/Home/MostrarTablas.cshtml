@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "MostrarTablas";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Regresar a Menu", "Menu")
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+    </tr>
+
+@foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.NombresTabla) {
+    <tr>
+        <td>
+            @item
+        </td>
+        <td>
+            @Html.ActionLink("Ver Tabla", "Grid", new { llave = item })
+        </td>
+    </tr>
+}
+
+</table>
