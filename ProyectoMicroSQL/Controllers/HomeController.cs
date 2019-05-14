@@ -10,6 +10,13 @@ namespace ProyectoMicroSQL.Controllers
 {
     public class HomeController : Controller
     {
+        static List<int> Codigobloque1 = new List<int>();
+        static List<int> Codigobloque2 = new List<int>();
+        static List<int> ids = new List<int>();
+        public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
+        static bool ExisteError = false;
+
+
         public ActionResult CargarTablas()
         {
             return View();
@@ -89,7 +96,7 @@ namespace ProyectoMicroSQL.Controllers
                         SeparandoLineas(lineas, lineas1);
 
 
-                        if (Data.Instancia.PalabrasReservadas.ContainsValue(lineas[0]) == true)
+                        if (Data.Instancia.PalabrasReservadas.ContainsValue(lineas[0]) == true && ExisteError == false)
                         {
                             Key = lineas[0];
 
@@ -102,16 +109,18 @@ namespace ProyectoMicroSQL.Controllers
                                 }
                             }
                         }
-                        else if (Data.Instancia.PalabrasReservadas.ContainsKey(lineas[0]) == true)
+                        else if (Data.Instancia.PalabrasReservadas.ContainsKey(lineas[0]) == true && ExisteError == false)
                         {
                             Key = lineas[0];
                             Instrucciones(Key, lineas);
                         }
                         else
                         {
-                            ViewBag.MensajeError = "Se escribio incorrectamente un comando";
+                            ViewBag.MensajeError = "ERROR EN BLOQUE " + i + ": Se ejecuto instrucciones previos al bloque con error\rInstrucciones realizadas: " + (i - 1);
+                            break;
                         }
                     }
+                   //Data.Instancia.EscribirArbol(Data.Instancia.Arboles[Data.Instancia.nombreTabla].Raiz);
                 }
                 catch
                 {
@@ -119,7 +128,8 @@ namespace ProyectoMicroSQL.Controllers
                 }
                 
             }
-            return View();
+            
+            return View(Grid(Data.Instancia.nombreTabla));
         }
 
         public List<string> SeparandoInstrucciones(string codigo)
@@ -167,7 +177,6 @@ namespace ProyectoMicroSQL.Controllers
             }
         }
 
-
         public void ContadorDeInstrucciones(List<string> instrucciones, int posicioninicial, List<int> bloque)
         {
             for (int i = posicioninicial; i < instrucciones.Count; i++)
@@ -184,18 +193,13 @@ namespace ProyectoMicroSQL.Controllers
             }
         }
 
-
-        static List<int> Codigobloque1 = new List<int>();
-        static List<int> Codigobloque2 = new List<int>();
-        static List<int> ids = new List<int>();
-        public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
-
         public void Instrucciones(string Key, List<string> instrucciones)
         {
             string nombreTabla = "";
             if (instrucciones[instrucciones.Count - 1] != "GO" && instrucciones[instrucciones.Count - 1] != "GO\r")
             {
                 ViewBag.ErrorCodigo = "Sintaxis incorrecta: 'GO' omitido al final";
+                ExisteError = true;
             }
             else
             {
@@ -224,14 +228,14 @@ namespace ProyectoMicroSQL.Controllers
                             ViewBag.MensajeError = "Palabra reservada no reconocible";
                             break;
                     }
+                    
                 }
                 catch
                 {
+                    ExisteError = true;
                     ViewBag.MensajeError = "ERROR DE SINTAXIS";
                 }
-
             }
-
         }
 
         public void CrearTabla(string nombreTabla, List<string> instrucciones)
@@ -269,7 +273,6 @@ namespace ProyectoMicroSQL.Controllers
                             linea = lineaAux.Split(' ');
                         }
                         
-                        Data.Instancia.ListaVariables.Add(linea[0]);
                         Data.Instancia.Arboles[nombreTabla].ListaVariables.Add(linea[0]);
                         
                         info.ContadorChar = info.ContadorDT = info.ContadorChar = 0;
@@ -349,6 +352,7 @@ namespace ProyectoMicroSQL.Controllers
                     Estructuras_de_Datos.Registro registroID = new Estructuras_de_Datos.Registro();
                     registroID.IDPrimaryKey = idRepetido;
                     Estructuras_de_Datos.Registro Reg = new Estructuras_de_Datos.Registro();
+
                     for (int i = 0; i < VariablesAAgregar.Count; i++)
                     {
                         if (VariablesAAgregar.Count == DatosDeVariables.Count && info.Variables.ContainsKey(VariablesAAgregar[i]))
@@ -361,26 +365,31 @@ namespace ProyectoMicroSQL.Controllers
                         else
                         {
                             ViewBag.MensajeError = "Falto una variable o excedio la cantidad";
+                            ExisteError = true;
                             break;
                         }
                     }
                     Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
                     if (Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg) != 0)
                     {
-                        ViewBag.MensajeError = nombreTabla + "ID de registro repetido, cambie el ID para su registro correcto";
+                        ViewBag.MensajeError = nombreTabla + ": ID de registro repetido, cambie el ID para su registro correcto, se omitio las instrucciones despues de este bloque";
+                        ExisteError = true;
+                    }else
+                    {
+                        //Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg);
+                        ViewBag.MensajeError = nombreTabla + ": Insercion exitosa";
                     }
-                    Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg);
-                    ViewBag.MensajeError = nombreTabla + ": Insercion exitosa";
-
                 }
                 catch
                 {
+                    ExisteError = true;
                     ViewBag.MensajeError = "ERROR DE SINTAXIS";
                 }
 
             }
             else
             {
+                ExisteError = true;
                 ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
             }
         }
@@ -417,6 +426,7 @@ namespace ProyectoMicroSQL.Controllers
             {
                 Data.Instancia.Arboles.Remove(nombreTabla);
                 Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
+                Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
                 ViewBag.MensajeError = nombreTabla + ": Eliminación de tabla correcta";
             }
             else
@@ -424,6 +434,7 @@ namespace ProyectoMicroSQL.Controllers
                 ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
             }
         }
+
         public ActionResult Carga()
         {
             return View();
@@ -468,7 +479,6 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Menu()
         {
-            //Data.Instancia.CargaDiccionarioPredeterminado();
             return View();
         }
 

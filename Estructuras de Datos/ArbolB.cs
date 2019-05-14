@@ -78,11 +78,6 @@ namespace Estructuras_de_Datos
             siguienteposicion = 2;
         }
 
-        //public void EscrituraTXT(List<T> InfoLista)
-        //{
-
-        //}
-
 
         public bool ExisteNodosHijo(NodoB<T> Nodo)
         {
@@ -140,7 +135,7 @@ namespace Estructuras_de_Datos
             else if (ExisteNodosHijo(Nodo) == true)
             {
                 var NodoHijo = new NodoB<T>();
-                NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)]; //BUSCA POSICION CORRESPONDIENTE
+                NodoHijo = Nodo.Hijos[ObteniendoPosicionHijo(Nodo, valor)]; //BUSCA POSICION CORRESPONDIENTE
                 Insertar(NodoHijo, valor);
                 if (ExisteEspacio(Nodo) == false)
                 {
@@ -212,8 +207,8 @@ namespace Estructuras_de_Datos
 
                 if (Nodo.Hijos.Count > 0)
                 {
-                    HijosDeHijos(Nodo, izq, 0, Nodo.min);
-                    HijosDeHijos(Nodo, der, Nodo.min + 1, Nodo.max + 1);
+                    AgregandoHijosAHijos(Nodo, izq, 0, Nodo.min);
+                    AgregandoHijosAHijos(Nodo, der, Nodo.min + 1, Nodo.max + 1);
                 }
 
                 Nodo.Padre.Hijos.RemoveAt(indice);
@@ -237,8 +232,8 @@ namespace Estructuras_de_Datos
 
                 Registro val = Nodo.Valores[Nodo.min];
 
-                HijosDeHijos(Nodo, izq, 0, Nodo.min);
-                HijosDeHijos(Nodo, der, Nodo.min + 1, Nodo.max + 1);
+                AgregandoHijosAHijos(Nodo, izq, 0, Nodo.min);
+                AgregandoHijosAHijos(Nodo, der, Nodo.min + 1, Nodo.max + 1);
 
                 Nodo.Hijos.Clear();
                 ConectarPadreEHijos(Nodo, izq);
@@ -250,7 +245,7 @@ namespace Estructuras_de_Datos
 
         }
 
-        public void HijosDeHijos(NodoB<T> Nodo, NodoB<T> hijo, int inicio, int fin)
+        public void AgregandoHijosAHijos(NodoB<T> Nodo, NodoB<T> hijo, int inicio, int fin)
         {
             for (int i = inicio; i <= fin; i++)
             {
@@ -268,7 +263,7 @@ namespace Estructuras_de_Datos
             Hijo.Padre = Padre;
         }
 
-        public int PosicionHijo(NodoB<T> Nodo, Registro valor)
+        public int ObteniendoPosicionHijo(NodoB<T> Nodo, Registro valor)
         {
             if (Nodo.Valores.Count == 1)
             {
@@ -322,7 +317,7 @@ namespace Estructuras_de_Datos
             if (BEncontrado == false && Nodo.Hijos.Count > 0)
             {
                 NodoB<T> NodoHijo = new NodoB<T>();
-                NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)];
+                NodoHijo = Nodo.Hijos[ObteniendoPosicionHijo(Nodo, valor)];
                 return Busqueda(valor, NodoHijo);
             }
             else if (BEncontrado == true)
@@ -356,7 +351,7 @@ namespace Estructuras_de_Datos
             if (BEncontrado == false && Nodo.Hijos.Count > 0)
             {
                 NodoB<T> NodoHijo = new NodoB<T>();
-                NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)];
+                NodoHijo = Nodo.Hijos[ObteniendoPosicionHijo(Nodo, valor)];
                 return BusquedaIDIgual(valor, NodoHijo);
             }
             else if (BEncontrado == true)
@@ -454,7 +449,7 @@ namespace Estructuras_de_Datos
             if (BEncontrado == false && Nodo.Hijos.Count > 0)
             {
                 NodoB<T> NodoHijo = new NodoB<T>();
-                NodoHijo = Nodo.Hijos[PosicionHijo(Nodo, valor)];
+                NodoHijo = Nodo.Hijos[ObteniendoPosicionHijo(Nodo, valor)];
                 Eliminar(valor, NodoHijo);
             }
         }

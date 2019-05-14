@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Estructuras_de_Datos
 {
-    public class NodoB<T> : IEnumerable<T> where T : IComparable
+    public class NodoB<T> : IComparable
     {
         public NodoB<T> Padre { get; set; }
         public List<NodoB<T>> Hijos { get; set; }
@@ -16,6 +16,7 @@ namespace Estructuras_de_Datos
         public int max { get; set; }
         public int min { get; set; }
 
+        public int contador { get; set; }
 
         public List<Registro> Valores { get; set; }
         public NodoB()
@@ -26,6 +27,7 @@ namespace Estructuras_de_Datos
             id = 0;
             max = 0;
             min = 0;
+            contador = 1;
         }
 
 
@@ -36,15 +38,23 @@ namespace Estructuras_de_Datos
             Nodo.min = Nodo.max / 2;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public int CompareTo(object obj)
         {
-            throw new NotImplementedException();
+            var comparado = (NodoB<T>)obj;
+            return id.CompareTo(comparado.id);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerator<T> GetEnumerator()
+        //{
+
+        //    yield return contador;
+        //    contador++;
+        //}
+
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    return GetEnumerator();
+        //}
 
     }
 }

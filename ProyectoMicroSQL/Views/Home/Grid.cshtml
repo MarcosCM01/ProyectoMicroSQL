@@ -3,7 +3,7 @@
     ViewBag.Title = "Grid";
 }
 
-<h2>Grid</h2>
+<h2>Tabla: @ProyectoMicroSQL.Singleton.Data.Instancia.nombreTabla</h2>
 
 <p>
     @Html.ActionLink("Regresar a menu", "Menu")
@@ -11,6 +11,8 @@
 <p>
     @Html.ActionLink("Regresar a tablas", "VerTablas")
 </p>
+
+<h3>@ViewBag.MensajeError</h3>
 
 <table class="table">
     <tr>

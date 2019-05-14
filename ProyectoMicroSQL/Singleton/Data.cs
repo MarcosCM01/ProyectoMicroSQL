@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using System.Collections;
+using Newtonsoft.Json;
+
 namespace ProyectoMicroSQL.Singleton
 {
     public class Data
@@ -26,7 +28,6 @@ namespace ProyectoMicroSQL.Singleton
 
         public List<string> ListaV = new List<string>();
         public List<string> ListaK = new List<string>();
-        public List<string> ListaVariables = new List<string>();
 
         public string nombreTabla { get; set; }
         public List<string> NombresTabla = new List<string>();
@@ -88,6 +89,41 @@ namespace ProyectoMicroSQL.Singleton
         //    PalabrasReservadasPredeterminadas.Add("GO", "IR");
             
         //}
+
+
+        public void EscribirArbol(Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro> Nodo)
+        {
+            
+                if (Nodo.Hijos.Count > 0)
+                {
+                    EscribirArbol(Nodo.Hijos[0]);
+
+                    string NodoAEscribir = JsonConvert.SerializeObject(Nodo, Formatting.Indented);
+                    //var NodoAEscribir = JsonConvert.SerializeObject(Nodo);
+                    using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+                    {
+                        Writer.WriteLine(NodoAEscribir);
+                    }
+
+                    for (int i = 1; i < Nodo.Hijos.Count; i++)
+                    {
+                        using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+                        {
+                            Writer.WriteLine(NodoAEscribir);
+                        }
+                    }
+                }
+                else
+                {
+                    string NodoAEscribir = JsonConvert.SerializeObject(Nodo, Formatting.Indented);
+                    using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+                    {
+                        Writer.WriteLine(NodoAEscribir);
+                    }
+                }
+            
+            
+        }
         public void LecturaTablas(string path)
         {
             string[] lineas = File.ReadAllLines(path);
