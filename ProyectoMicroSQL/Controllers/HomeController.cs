@@ -485,7 +485,7 @@ namespace ProyectoMicroSQL.Controllers
                         if (Data.Instancia.LecturaCSV(model) == 1)
                         {
                             ViewBag.Msg = "Carga del archivo correcta";
-                            ViewBag.Mensaje = ViewBag.Msg;
+                            ViewBag.Mensaje = "Carga del archivo correcta";
                             return RedirectToAction("Menu");
                         }
                         else
@@ -537,10 +537,14 @@ namespace ProyectoMicroSQL.Controllers
             {
                 string llave = collection["Llave"].Trim();
                 string Valor = collection["NuevaPalabra"].Trim();
-                if (Data.Instancia.PalabrasReservadas.ContainsKey(llave))
+                if(Valor != null && Valor != "" && Data.Instancia.PalabrasReservadas.ContainsKey(llave))
                 {
                     Data.Instancia.PalabrasReservadas[llave] = Valor;
                     ViewBag.Error = "Modificacion correcta";
+                }
+                if ((Valor == null || Valor == "") && Data.Instancia.PalabrasReservadas.ContainsKey(llave))
+                {
+                    ViewBag.Error = "Palabra a modificar no puede ser espacio en blanco";
                 }
                 else
                 {
