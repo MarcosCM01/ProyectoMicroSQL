@@ -56,7 +56,6 @@ namespace Estructuras_de_Datos
 
         public void EliminarTodo(NodoB<T> Nodo)
         {
-
             if (ExisteNodosHijo(Nodo) == true)
             {
                 EliminarTodo(Nodo.Hijos[0]);

@@ -46,7 +46,7 @@ namespace ProyectoMicroSQL.Controllers
             }
             catch
             {
-                ViewBag.Mensaje = "No existe tabla indicada";
+                ViewBag.Mensaje = "Tabla inexistente";
                 return RedirectToAction("Menu");
             }
             
@@ -138,7 +138,9 @@ namespace ProyectoMicroSQL.Controllers
                             break;
                         }
                     }
-                   //Data.Instancia.EscribirArbol(Data.Instancia.Arboles[Data.Instancia.nombreTabla].Raiz);
+                    //Data.Instancia.Arboles[Data.Instancia.nombreTabla].AlmacenandoNodosEnLista(Data.Instancia.Arboles[Data.Instancia.nombreTabla].Raiz);
+                    //Data.Instancia.listaNodos = Data.Instancia.Arboles[Data.Instancia.nombreTabla].RetornandoListaNodos();
+                    //Data.Instancia.EscribirArbol(Data.Instancia.Arboles[Data.Instancia.nombreTabla].Raiz);
                 }
                 catch
                 {
@@ -146,8 +148,7 @@ namespace ProyectoMicroSQL.Controllers
                 }
                 
             }
-            
-            return View(Grid(Data.Instancia.nombreTabla));
+            return RedirectToAction("Grid", "Home", new { Nombre = Data.Instancia.nombreTabla });
         }
 
         public List<string> SeparandoInstrucciones(string codigo)
@@ -238,7 +239,7 @@ namespace ProyectoMicroSQL.Controllers
                             }
                             break;
                         case "SELECT":
-
+                            Select(nombreTabla, instrucciones);
                             break;
                         case "DELETE FROM":
                             EliminarEnTabla(nombreTabla, instrucciones);
@@ -450,13 +451,20 @@ namespace ProyectoMicroSQL.Controllers
             }
         }
 
+        public void Select(string nombreTabla, List<string> instrucciones)
+        {
+
+        }
+
         public void DropTable(string nombreTabla)
         {
             if (Data.Instancia.Arboles.ContainsKey(nombreTabla))
             {
-                Data.Instancia.Arboles.Remove(nombreTabla);
-                Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
                 Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
+                Data.Instancia.NombresTabla.Remove(nombreTabla);
+                Data.Instancia.Arboles[nombreTabla].Raiz = null;
+                Data.Instancia.Arboles.Remove(nombreTabla);
+                //Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
                 ViewBag.MensajeError = nombreTabla + ": Eliminación de tabla correcta";
             }
             else

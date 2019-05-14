@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Grid";
+}
+
+<h2>Tabla: @ProyectoMicroSQL.Singleton.Data.Instancia.nombreTabla</h2>
+
+<p>
+    @Html.ActionLink("Regresar a menu", "Menu")
+</p>
+<p>
+    @Html.ActionLink("Regresar a tablas", "VerTablas")
+</p>
+
+<h3>@ViewBag.MensajeError</h3>
+
+<table class="table">
+    <tr>
+        @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.Arboles[ProyectoMicroSQL.Singleton.Data.Instancia.nombreTabla].ListaVariables)
+        {
+            <th>@item</th>
+        }
+    </tr>
+
+    @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.listaNodos)
+    {
+        for (int i = 0; i < item.Valores.Count; i++)
+        {
+            <tr>
+                @for (int j = 0; j < item.Valores[i].Valores.Count; j++)
+                {
+                    <td>
+                        @item.Valores[i].Valores[j]
+                    </td>
+                }
+            </tr>
+        }
+    }
+
+</table>

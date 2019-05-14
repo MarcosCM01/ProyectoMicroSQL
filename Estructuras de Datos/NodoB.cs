@@ -16,8 +16,6 @@ namespace Estructuras_de_Datos
         public int max { get; set; }
         public int min { get; set; }
 
-        public int contador { get; set; }
-
         public List<Registro> Valores { get; set; }
         public NodoB()
         {
@@ -27,10 +25,7 @@ namespace Estructuras_de_Datos
             id = 0;
             max = 0;
             min = 0;
-            contador = 1;
         }
-
-
 
         public void AsignarGrado(NodoB<T> Nodo, int grado)
         {
@@ -43,18 +38,6 @@ namespace Estructuras_de_Datos
             var comparado = (NodoB<T>)obj;
             return id.CompareTo(comparado.id);
         }
-
-        //public IEnumerator<T> GetEnumerator()
-        //{
-
-        //    yield return contador;
-        //    contador++;
-        //}
-
-        //IEnumerator IEnumerable.GetEnumerator()
-        //{
-        //    return GetEnumerator();
-        //}
 
     }
 }
