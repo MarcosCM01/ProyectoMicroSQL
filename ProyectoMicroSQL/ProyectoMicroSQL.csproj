@@ -172,8 +172,8 @@
     <Content Include="Views\Home\Menu.cshtml" />
     <Content Include="Views\Home\Personalizar.cshtml" />
     <Content Include="Views\Home\CodigoSQL.cshtml" />
-    <Content Include="Views\Home\MostrarTablas.cshtml" />
     <Content Include="Views\Home\Grid.cshtml" />
+    <Content Include="Views\Home\VerTablas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

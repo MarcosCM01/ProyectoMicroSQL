@@ -1,0 +1,30 @@
+﻿@model ProyectoMicroSQL.Singleton.Data
+@{
+    ViewBag.Title = "MostrarTablas";
+}
+
+<h2>Tablas creadas</h2>
+
+<p>
+    @Html.ActionLink("Regresar a menu", "Menu")
+</p>
+
+<h3>Cantidad de Tablas: @ProyectoMicroSQL.Singleton.Data.Instancia.NombresTabla.Count</h3>
+<table class="table">
+    <tr>
+        <th>Nombre de Tabla</th>
+        <th>Opciones</th>
+    </tr>
+
+    @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.NombresTabla)
+    {
+        <tr>
+            <td>
+                @item
+            </td>
+            <td>
+                @Html.ActionLink("Ver Tabla", "Grid", "Home", new { Nombre = item}, null)
+            </td>
+        </tr>
+    }
+</table>

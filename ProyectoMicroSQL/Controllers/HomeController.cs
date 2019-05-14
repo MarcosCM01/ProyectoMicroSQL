@@ -22,14 +22,14 @@ namespace ProyectoMicroSQL.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult MostrarTablas()
+        public ActionResult Grid(string Nombre)
         {
-            return View();
-        }
-
-        public ActionResult Grid()
-        {
+            if (Nombre != null)
+            {
+                Data.Instancia.nombreTabla = Nombre;
+            }
             string llave = Data.Instancia.nombreTabla;
+
             Data.Instancia.Arboles[llave].ExistenElementosEnLista();
             Data.Instancia.Arboles[llave].AlmacenandoNodosEnLista(Data.Instancia.Arboles[llave].Raiz);
             Data.Instancia.listaNodos = Data.Instancia.Arboles[llave].RetornandoListaNodos();
@@ -40,6 +40,8 @@ namespace ProyectoMicroSQL.Controllers
         {
             return View();
         }
+
+
         public ActionResult CodigoSQL()
         {
             return View();
@@ -72,7 +74,11 @@ namespace ProyectoMicroSQL.Controllers
             {
                 ViewBag.MensajeError = "Falta de 'GO' al finalizar instrucciones por bloque";
             }
-            else if(ViewBag.MensajeError = "ERROR DE SINTAXIS")
+            else if(ViewBag.MensajeError == "ERROR DE SINTAXIS")
+            {
+                
+            }
+            else
             {
                 try
                 {
@@ -205,9 +211,6 @@ namespace ProyectoMicroSQL.Controllers
                         case "SELECT":
 
                             break;
-                        case "FROM":
-
-                            break;
                         case "DELETE FROM":
                             EliminarEnTabla(nombreTabla, instrucciones);
                             break;
@@ -249,19 +252,26 @@ namespace ProyectoMicroSQL.Controllers
                     Codigobloque1.Clear();
                     Codigobloque2.Clear();
                     ContadorDeInstrucciones(instrucciones, 0, Codigobloque1);
+                    info.Variables.Clear();
                     for (int i = Codigobloque1[0] + 1; i < Codigobloque1[1]; i++)
                     {
+                        string lineaAux = "";
                         char[] Lineachar = instrucciones[i].ToCharArray();
                         string[] linea = new string[100];
                         if (Lineachar[Lineachar.Length - 1] == ',')
                         {
                             linea = instrucciones[i].Split(',');
+                            linea = linea[0].Split(' ');
                         }
-
-                        linea = linea[0].Split(' ');
+                        else
+                        {
+                            lineaAux = instrucciones[i];
+                            linea = lineaAux.Split(' ');
+                        }
+                        
                         Data.Instancia.ListaVariables.Add(linea[0]);
                         Data.Instancia.Arboles[nombreTabla].ListaVariables.Add(linea[0]);
-                        info.Variables.Clear();
+                        
                         info.ContadorChar = info.ContadorDT = info.ContadorChar = 0;
                         switch (linea[1])
                         {

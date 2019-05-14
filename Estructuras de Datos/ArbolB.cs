@@ -35,12 +35,13 @@ namespace Estructuras_de_Datos
             if (ExisteNodosHijo(Nodo) == true)
             {
                 AlmacenandoNodosEnLista(Nodo.Hijos[0]);
+
                 ListaNodos.Add(Nodo);
-                
+
                 for (int i = 1; i < Nodo.Hijos.Count; i++)
                 {
                     AlmacenandoNodosEnLista(Nodo.Hijos[i]);
-                } 
+                }
             }
             else
             {
@@ -190,8 +191,8 @@ namespace Estructuras_de_Datos
 
             if (Nodo.Padre != null) //Si es cualquier hijo
             {
-                PadreHijo(Nodo.Padre, izq);
-                PadreHijo(Nodo.Padre, der);
+                ConectarPadreEHijos(Nodo.Padre, izq);
+                ConectarPadreEHijos(Nodo.Padre, der);
 
                 CreandoNodo(izq, Nodo);
                 izq.id = Nodo.id;
@@ -227,8 +228,8 @@ namespace Estructuras_de_Datos
                 CreandoNodo(izq, Nodo);
                 CreandoNodo(der, izq);
                 padreAux.Valores.Add(Nodo.Valores[Nodo.min]);
-                PadreHijo(Nodo, izq);
-                PadreHijo(Nodo, der);
+                ConectarPadreEHijos(Nodo, izq);
+                ConectarPadreEHijos(Nodo, der);
                 Nodo.Valores.Sort((x, y) => x.CompareTo(y));
                 Nodo.Valores = padreAux.Valores;
             }//Si es raiz y no caben valores
@@ -243,8 +244,8 @@ namespace Estructuras_de_Datos
                 HijosDeHijos(Nodo, der, Nodo.min + 1, Nodo.max + 1);
 
                 Nodo.Hijos.Clear();
-                PadreHijo(Nodo, izq);
-                PadreHijo(Nodo, der);
+                ConectarPadreEHijos(Nodo, izq);
+                ConectarPadreEHijos(Nodo, der);
 
                 Nodo.Valores.Clear();
                 Nodo.Valores.Add(val);
@@ -264,7 +265,7 @@ namespace Estructuras_de_Datos
             }
         }
 
-        public void PadreHijo(NodoB<T> Padre, NodoB<T> Hijo)
+        public void ConectarPadreEHijos(NodoB<T> Padre, NodoB<T> Hijo)
         {
             Padre.Hijos.Add(Hijo);
             Hijo.Padre = Padre;
@@ -429,7 +430,20 @@ namespace Estructuras_de_Datos
 
                     if (NodoInicial == true)
                     {
-                        Nodo = NodoAModificar;
+                        if (Nodo.Valores.Count == 0)
+                        {
+                            Nodo = NodoAModificar;
+                            NodoB<T> NodoAux = new NodoB<T>();
+                            for (int j = 0; j < Nodo.Hijos.Count; j++)
+                            {
+                                for (int k = 0; k < Nodo.Hijos[i].Valores.Count; k++)
+                                {
+                                    NodoAux.Valores.Add(Nodo.Hijos[j].Valores[k]);
+                                }
+                            }
+                            Nodo = null;
+                            Raiz = NodoAux;
+                        }
                     }
 
                     if (ExisteUnderFlow(Nodo) == true && Nodo.Padre != null)
