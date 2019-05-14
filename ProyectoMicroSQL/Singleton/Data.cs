@@ -22,6 +22,7 @@ namespace ProyectoMicroSQL.Singleton
         }
 
         public Dictionary<string, string> PalabrasReservadas = new Dictionary<string, string>();
+        public Dictionary<string, string> PalabrasReservadasPredeterminadas = new Dictionary<string, string>();
 
         public List<string> ListaV = new List<string>();
         public List<string> ListaK = new List<string>();
@@ -75,7 +76,18 @@ namespace ProyectoMicroSQL.Singleton
 
         }
 
-
+        //public void CargaDiccionarioPredeterminado()
+        //{
+        //    PalabrasReservadasPredeterminadas.Add("SELECT", "SELECCIONAR");
+        //    PalabrasReservadasPredeterminadas.Add("DELETE FROM", "BORRAR DESDE");
+        //    PalabrasReservadasPredeterminadas.Add("WHERE", "DONDE");
+        //    PalabrasReservadasPredeterminadas.Add("CREATE TABLE", "CREAR TABLA");
+        //    PalabrasReservadasPredeterminadas.Add("DROP TABLE;", "BORRAR TABLA");
+        //    PalabrasReservadasPredeterminadas.Add("INSERT INTO;", "INSERTAR EN");
+        //    PalabrasReservadasPredeterminadas.Add("VALUES;", "VALORES");
+        //    PalabrasReservadasPredeterminadas.Add("GO", "IR");
+            
+        //}
         public void LecturaTablas(string path)
         {
             string[] lineas = File.ReadAllLines(path);

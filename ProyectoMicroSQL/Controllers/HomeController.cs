@@ -402,6 +402,7 @@ namespace ProyectoMicroSQL.Controllers
                     reg.IDPrimaryKey = indice;
                     Data.Instancia.Arboles[nombreTabla].Eliminar(reg, Data.Instancia.Arboles[nombreTabla].Raiz);
                     //Data.Instancia.ArbolesBPlus[nombreTabla].Eliminar(reg);
+                    ViewBag.MensajeError = nombreTabla + ": Eliminacion correcta";
                 }
             }
             else
@@ -423,14 +424,8 @@ namespace ProyectoMicroSQL.Controllers
                 ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
             }
         }
-        static int contador = 0;
         public ActionResult Carga()
         {
-            if (contador > 0)
-            {
-                ViewBag.Msg = "ERROR AL CARGAR EL ARCHIVO, INTENTE DE NUEVO";
-            }
-            contador++;
             return View();
         }
 
@@ -439,12 +434,24 @@ namespace ProyectoMicroSQL.Controllers
         {
             try
             {
-                ViewBag.Msg = "Carga exitosa";
-                if (file != null)
+                
+                if (file != null && file.ContentLength > 0)
                 {
-                    Upload(file);
-                    return RedirectToAction("Upload");
-
+                    string model = "";
+                    
+                        model = Server.MapPath("~/.ini/") + file.FileName + ".ini";
+                        file.SaveAs(model);
+                        if (Data.Instancia.LecturaCSV(model) == 1)
+                        {
+                            ViewBag.Msg = "Carga del archivo correcta";
+                            ViewBag.Mensaje = ViewBag.Msg;
+                            return RedirectToAction("Menu");
+                        }
+                        else
+                        {
+                            ViewBag.Msg = "Carga del archivo incorrecta";
+                            return View();
+                        }
                 }
                 else
                 {
@@ -459,37 +466,9 @@ namespace ProyectoMicroSQL.Controllers
             
         }
 
-        
-        public ActionResult Upload (HttpPostedFileBase file)
-        {
-            string model = "";
-            if (file != null && file.ContentLength > 0)
-            {
-                model = Server.MapPath("~/Upload/") + file.FileName + ".ini";
-                file.SaveAs(model);
-                if(Data.Instancia.LecturaCSV(model) == 1)
-                {
-                    ViewBag.Msg = "Carga del archivo correcta";
-                    return RedirectToAction("Menu");
-                }
-                else
-                {
-                    ViewBag.Msg = "Carga del archivo incorrecta";
-                    return View("Carga");
-                }
-                
-                 //VERIFICAR
-            }
-            else
-            {
-                ViewBag.Msg = "ARCHIVO SIN CONTENIDO";
-                return RedirectToAction("Carga");
-            }
-        }
-
         public ActionResult Menu()
         {
-            ViewBag.Mensaje = "";
+            //Data.Instancia.CargaDiccionarioPredeterminado();
             return View();
         }
 

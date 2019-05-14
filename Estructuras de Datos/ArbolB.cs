@@ -56,29 +56,26 @@ namespace Estructuras_de_Datos
 
         public void EliminarTodo(NodoB<T> Nodo)
         {
+
             if (ExisteNodosHijo(Nodo) == true)
             {
-                if (Nodo.Hijos.Count > 0) 
+                EliminarTodo(Nodo.Hijos[0]);
+
+                for (int i = 1; i < Nodo.Hijos.Count; i++)
                 {
-                    EliminarTodo(Nodo.Hijos[0]);
+                    EliminarTodo(Nodo.Hijos[i]);
                 }
-                for (int i = 0; i < Nodo.Valores.Count; i++)
-                {
-                    Nodo.Valores.Clear();
-                }
-                if (Nodo.Hijos.Count > 0)
-                {
-                    EliminarTodo(Nodo.Hijos[Nodo.Hijos.Count - 1]);
-                }
-                for (int i = 0; i < Nodo.Valores.Count; i++)
-                {
-                    Nodo.Valores.Clear();
-                }
+                Nodo.Hijos.Clear(); 
+                Nodo.Valores.Clear();
+                Nodo.id = 0;
             }
             else
             {
+                Nodo.Padre = null;
                 Nodo.Valores.Clear();
+                Nodo.Hijos.Clear();
             }
+            siguienteposicion = 2;
         }
 
         //public void EscrituraTXT(List<T> InfoLista)
@@ -428,6 +425,12 @@ namespace Estructuras_de_Datos
                         Nodo.Valores.RemoveAt(i);
                     }
 
+                    if (ExisteUnderFlow(Nodo) == true && Nodo.Padre != null)
+                    {
+                        //Llamo a un metodo para ver si un hermano VECINO puede prestar
+                        VerificarHermanos(Nodo.Padre, Nodo);
+                    }
+
                     if (NodoInicial == true)
                     {
                         if (Nodo.Valores.Count == 0)
@@ -444,12 +447,6 @@ namespace Estructuras_de_Datos
                             Nodo = null;
                             Raiz = NodoAux;
                         }
-                    }
-
-                    if (ExisteUnderFlow(Nodo) == true && Nodo.Padre != null)
-                    {
-                        //Llamo a un metodo para ver si un hermano VECINO puede prestar
-                        VerificarHermanos(Nodo.Padre, Nodo);
                     }
                 }
             }
@@ -684,11 +681,12 @@ namespace Estructuras_de_Datos
                     padre.Valores.RemoveAt(posicionvalorpadre);
                     hijo.Valores.Sort((x, y) => x.CompareTo(y));
                 }
+            }
 
-
-
-
-
+            if (ExisteUnderFlow(padre) == true && padre.Padre != null)
+            {
+                //Llamo a un metodo para ver si un hermano VECINO puede prestar
+                VerificarHermanos(padre.Padre, padre);
             }
 
         }
