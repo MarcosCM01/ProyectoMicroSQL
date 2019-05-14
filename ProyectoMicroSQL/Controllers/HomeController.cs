@@ -15,7 +15,7 @@ namespace ProyectoMicroSQL.Controllers
         static List<int> ids = new List<int>();
         public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
         static bool ExisteError = false;
-
+        static bool SeCargoDiccionario = false;
 
         public ActionResult CargarTablas()
         {
@@ -31,16 +31,25 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Grid(string Nombre)
         {
-            if (Nombre != null)
+            try
             {
-                Data.Instancia.nombreTabla = Nombre;
-            }
-            string llave = Data.Instancia.nombreTabla;
+                if (Nombre != null)
+                {
+                    Data.Instancia.nombreTabla = Nombre;
+                }
+                string llave = Data.Instancia.nombreTabla;
 
-            Data.Instancia.Arboles[llave].ExistenElementosEnLista();
-            Data.Instancia.Arboles[llave].AlmacenandoNodosEnLista(Data.Instancia.Arboles[llave].Raiz);
-            Data.Instancia.listaNodos = Data.Instancia.Arboles[llave].RetornandoListaNodos();
-            return View(Data.Instancia.listaNodos);
+                Data.Instancia.Arboles[llave].ExistenElementosEnLista();
+                Data.Instancia.Arboles[llave].AlmacenandoNodosEnLista(Data.Instancia.Arboles[llave].Raiz);
+                Data.Instancia.listaNodos = Data.Instancia.Arboles[llave].RetornandoListaNodos();
+                return View(Data.Instancia.listaNodos);
+            }
+            catch
+            {
+                ViewBag.Mensaje = "No existe tabla indicada";
+                return RedirectToAction("Menu");
+            }
+            
         }
 
         public ActionResult VerTablas()
@@ -48,15 +57,16 @@ namespace ProyectoMicroSQL.Controllers
             return View();
         }
 
-
         public ActionResult CodigoSQL()
         {
+            ExisteError = false;
             return View();
         }
 
         [HttpPost]
         public ActionResult CodigoSQL(string codigo)
         {
+            ExisteError = false;
             string[] lineas2 = codigo.Trim().Split('\n');
             List<string> lineas = new List<string>();
 
@@ -116,7 +126,15 @@ namespace ProyectoMicroSQL.Controllers
                         }
                         else
                         {
-                            ViewBag.MensajeError = "ERROR EN BLOQUE " + i + ": Se ejecuto instrucciones previos al bloque con error\rInstrucciones realizadas: " + (i - 1);
+                            if(i == 0)
+                            {
+                                ViewBag.MensajeError = "ERROR EN BLOQUE " + (i) + ": Se ejecuto instrucciones previos al bloque con error\rInstrucciones realizadas: 0";
+                            }
+                            else
+                            {
+                                ViewBag.MensajeError = "ERROR EN BLOQUE " + (i) + ": Se ejecuto instrucciones previos al bloque con error\rInstrucciones realizadas: " + (i - 1);
+                            }
+                            
                             break;
                         }
                     }
@@ -210,7 +228,14 @@ namespace ProyectoMicroSQL.Controllers
                     switch (Key)
                     {
                         case "CREATE TABLE":
-                            CrearTabla(nombreTabla, instrucciones);
+                            if(Data.Instancia.Arboles.ContainsKey(nombreTabla))
+                            {
+                                ExisteError = true;
+                                ViewBag.MensajeError = nombreTabla + ": Tabla Existente, se ejecuto instrucciones anteriores a esta excepcion";
+                            }else
+                            {
+                                CrearTabla(nombreTabla, instrucciones);
+                            }
                             break;
                         case "SELECT":
 
@@ -403,7 +428,7 @@ namespace ProyectoMicroSQL.Controllers
                 {
                     Data.Instancia.Arboles[nombreTabla].EliminarTodo(Data.Instancia.Arboles[nombreTabla].Raiz);
                 }
-                else
+                else if(instrucciones[2] == "WHERE")
                 {
                     string[] separador = instrucciones[instrucciones.Count - 2].Split(' ');
 
@@ -412,11 +437,16 @@ namespace ProyectoMicroSQL.Controllers
                     Data.Instancia.Arboles[nombreTabla].Eliminar(reg, Data.Instancia.Arboles[nombreTabla].Raiz);
                     //Data.Instancia.ArbolesBPlus[nombreTabla].Eliminar(reg);
                     ViewBag.MensajeError = nombreTabla + ": Eliminacion correcta";
+                }else
+                {
+                    ViewBag.MensajeError = nombreTabla + ": Error en escritura de comandos al eliminar un dato\rSe ejecutaron las instrucciones anteriores a esta excepcion.";
+                    ExisteError = true;
                 }
             }
             else
             {
                 ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
+                ExisteError = true;
             }
         }
 
@@ -431,6 +461,7 @@ namespace ProyectoMicroSQL.Controllers
             }
             else
             {
+                ExisteError = true;
                 ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
             }
         }
@@ -445,12 +476,11 @@ namespace ProyectoMicroSQL.Controllers
         {
             try
             {
-                
                 if (file != null && file.ContentLength > 0)
                 {
                     string model = "";
-                    
-                        model = Server.MapPath("~/.ini/") + file.FileName + ".ini";
+                        SeCargoDiccionario = true;
+                        model = Server.MapPath("~/.ini/MicroSQL.ini");
                         file.SaveAs(model);
                         if (Data.Instancia.LecturaCSV(model) == 1)
                         {
@@ -479,6 +509,11 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Menu()
         {
+            if(SeCargoDiccionario == false)
+            {
+                SeCargoDiccionario = true;
+                Data.Instancia.LecturaCSV(Server.MapPath("~/.ini/MicroSQL.ini"));
+            }
             return View();
         }
 
@@ -523,7 +558,7 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult Reestablecer()
         {
-            Data.Instancia.Reestablecer();
+            Data.Instancia.LecturaCSV(Server.MapPath("~/.ini/MicroSQL Predeterminado.ini"));
             ViewBag.Mensaje = "Restablecimiento completado";
             return View("Menu");
         }

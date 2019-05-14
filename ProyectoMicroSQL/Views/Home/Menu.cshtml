@@ -4,49 +4,15 @@
 
 <h2>Menu principal MicroSQL</h2>
 
-<h4>@ViewBag.Msg</h4>
+<h4>@ViewBag.Mensaje</h4>
 
 <div class="jumbotron">
-    <h2 class="display-3"> PROYECTO MICRO SQL: Cargar Diccionario de palabras</h2>
-    <h4 class="display-3"> Cargue su archivo con extension ".init" para almacenar palabras reservadas en otro idioma.</h4>
-    <p class="lead">
-
-        <h4><button type="button" onclick="location.href= '@Url.Action("Carga","Home")'">CARGAR DICCIONARIO</button></h4>
-    </p>
-    
-</div>
-
-
-<div class="jumbotron">
-    <h2 class="display-3"> PROYECTO MICRO SQL: Cargar Tablas</h2>
-    <h4 class="display-3"> Cargue su tabla con extension ".ArbolB" para poder ver la informacion almacenada.</h4>
-    <p class="lead">
-
-        <h4>CARGAR TABLA</h4>
-        <h4><button type="button" onclick="location.href= '@Url.Action("CargarTablas","Home")'">CARGAR TABLA</button></h4>
-
-    </p>
-</div>
-
-
-<div class="jumbotron">
-    <h2 class="display-3"> PROYECTO MICRO SQL: Código SQL</h2>
+    <h2 class="display-3"> PROYECTO MICRO SQL: Codigo SQL</h2>
     <h4 class="display-3"> Ingrese al cuadro de comandos para crear, eliminar, agregar datos</h4>
     <p class="lead">
 
         <h4>CODIGO SQL</h4>
         <h4><button type="button" onclick="location.href= '@Url.Action("CodigoSQL","Home")'">CODIGO SQL </button></h4>
-
-    </p>
-</div>
-
-<div class="jumbotron">
-    <h2 class="display-3"> PROYECTO MICRO SQL: Datos de ultima Tabla utilizada</h2>
-    <h4 class="display-3"> Vea los datos de la ultima tabla a la cual usted tuvo interaccion.</h4>
-    <p class="lead">
-
-        <h4>GRID</h4>
-        <h4><button type="button" onclick="location.href= '@Url.Action("Grid","Home")'">GRID </button></h4>
 
     </p>
 </div>
@@ -63,6 +29,27 @@
 
 
 <div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Datos de ultima Tabla utilizada</h2>
+    <h4 class="display-3"> Vea los datos de la ultima tabla a la cual usted tuvo interaccion.</h4>
+    <p class="lead">
+
+        <h4>VER ULTIMA TABLA</h4>
+        <h4><button type="button" onclick="location.href= '@Url.Action("Grid","Home")'">GRID </button></h4>
+    </p>
+</div>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Cargar Tablas</h2>
+    <h4 class="display-3"> Cargue su tabla con extension ".ArbolB" para poder ver la informacion almacenada.</h4>
+    <p class="lead">
+
+        <h4>CARGAR TABLA</h4>
+        <h4><button type="button" onclick="location.href= '@Url.Action("CargarTablas","Home")'">CARGAR TABLA</button></h4>
+
+    </p>
+</div>
+
+<div class="jumbotron">
     <h2 class="display-3"> PROYECTO MICRO SQL: Personalización de otro idioma</h2>
     <h4 class="display-3"> Modifique las palabras reservadas a otro idioma</h4>
     <p class="lead">
@@ -72,7 +59,6 @@
     </p>
 </div>
 
-
 <div class="jumbotron">
     <h2 class="display-3"> PROYECTO MICRO SQL: Reestablecimiento de idiomas predeterminados</h2>
     <h4 class="display-3"> Si desea reestablecer las palabras reservadas a como estaba predeterminadamente, haga click en esta opción</h4>
@@ -80,4 +66,14 @@
 
         <h4><button type="button" onclick="location.href= '@Url.Action("Reestablecer","Home")'">REESTABLECER DICCIONARIO </button></h4>
     <p>@ViewBag.Mensaje</p>
+</div>
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Cargar Diccionario de palabras</h2>
+    <h4 class="display-3"> Cargue su archivo con extension ".init" para almacenar palabras reservadas en otro idioma.</h4>
+    <p class="lead">
+
+        <h4><button type="button" onclick="location.href= '@Url.Action("Carga","Home")'">CARGAR DICCIONARIO</button></h4>
+    </p>
+
 </div>

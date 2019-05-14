@@ -46,6 +46,9 @@ namespace ProyectoMicroSQL.Singleton
         {
             try
             {
+                PalabrasReservadas.Clear();
+                ListaV.Clear();
+                ListaK.Clear();
                 string[] lineas = File.ReadAllLines(path);
                 var contador = 0;
                 foreach (var item in lineas)
@@ -76,20 +79,6 @@ namespace ProyectoMicroSQL.Singleton
             }
 
         }
-
-        //public void CargaDiccionarioPredeterminado()
-        //{
-        //    PalabrasReservadasPredeterminadas.Add("SELECT", "SELECCIONAR");
-        //    PalabrasReservadasPredeterminadas.Add("DELETE FROM", "BORRAR DESDE");
-        //    PalabrasReservadasPredeterminadas.Add("WHERE", "DONDE");
-        //    PalabrasReservadasPredeterminadas.Add("CREATE TABLE", "CREAR TABLA");
-        //    PalabrasReservadasPredeterminadas.Add("DROP TABLE;", "BORRAR TABLA");
-        //    PalabrasReservadasPredeterminadas.Add("INSERT INTO;", "INSERTAR EN");
-        //    PalabrasReservadasPredeterminadas.Add("VALUES;", "VALORES");
-        //    PalabrasReservadasPredeterminadas.Add("GO", "IR");
-            
-        //}
-
 
         public void EscribirArbol(Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro> Nodo)
         {
@@ -133,15 +122,6 @@ namespace ProyectoMicroSQL.Singleton
                 linea = item.Split('|');
 
             }
-        }
-
-        public void Reestablecer()
-        {
-            for (int i = 0; i < ListaV.Count; i++)
-            {
-                PalabrasReservadas[ListaK[i]] = ListaV[i];
-            }
-            
         }
 
     }
