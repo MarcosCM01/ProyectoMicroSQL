@@ -35,12 +35,13 @@ namespace ProyectoMicroSQL.Singleton
 
         public Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>> Arboles = new Dictionary<string, Estructuras_de_Datos.ArbolB<Estructuras_de_Datos.Registro>>();
         public Dictionary<string, Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>> ArbolesBPlus = new Dictionary<string, Estructuras_de_Datos.ArbolBP<Estructuras_de_Datos.Registro>>();
-        public Estructuras_de_Datos.Info Informacion = new Estructuras_de_Datos.Info();
+        public Dictionary<string, Estructuras_de_Datos.Info> listaVariables = new Dictionary<string, Estructuras_de_Datos.Info>();
 
         public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> NodosAMostrar = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
 
         public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> listaNodosFiltrados = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
         public List<string> VariablesFiltradas = new List<string>();
+        public List<Estructuras_de_Datos.Registro> RegistrosVariablesFiltradas = new List<Estructuras_de_Datos.Registro>();
         public int IDEncontrado { get; set; }
 
         public int LecturaCSV(string path)
@@ -122,6 +123,7 @@ namespace ProyectoMicroSQL.Singleton
 
             }
         }
+
 
     }
 }

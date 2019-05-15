@@ -13,11 +13,12 @@ namespace ProyectoMicroSQL.Controllers
         static List<int> Codigobloque1 = new List<int>();
         static List<int> Codigobloque2 = new List<int>();
         static List<int> ids = new List<int>();
-        public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
+        //public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
         static bool ExisteError = false;
         static bool SeCargoDiccionario = false;
         static int Grado;
         static bool SeleccionoSelect = false;
+        static bool SeleccionoSelectFiltrado = false;
         static bool SeleccionoCreate = false;
 
         public ActionResult AsignarGrado()
@@ -83,6 +84,8 @@ namespace ProyectoMicroSQL.Controllers
         {
             SeleccionoSelect = false;
             ExisteError = false;
+            SeleccionoCreate = false;
+            SeleccionoSelectFiltrado = false;
             return View();
         }
 
@@ -171,7 +174,11 @@ namespace ProyectoMicroSQL.Controllers
                 }
                 
             }
-            if(SeleccionoSelect == true)
+            if(SeleccionoSelect == true && SeleccionoSelectFiltrado == true)
+            {
+                return View("SelectFiltrado");
+            }
+            else if (SeleccionoSelect == true)
             {
                 return View("Select");
             }
@@ -317,7 +324,15 @@ namespace ProyectoMicroSQL.Controllers
                     Codigobloque1.Clear();
                     Codigobloque2.Clear();
                     ContadorDeInstrucciones(instrucciones, 0, Codigobloque1);
-                    info.Variables.Clear();
+                    Estructuras_de_Datos.Info InfoVariables = new Estructuras_de_Datos.Info();
+                    if(Data.Instancia.listaVariables.ContainsKey(nombreTabla) == false)
+                    {
+                        Data.Instancia.listaVariables.Add(nombreTabla, InfoVariables);
+                    }else
+                    {
+                        ViewBag.MensajeError = "Tabla existente";
+                        ExisteError = true;
+                    }
                     for (int i = Codigobloque1[0] + 1; i < Codigobloque1[1]; i++)
                     {
                         string lineaAux = "";
@@ -336,30 +351,52 @@ namespace ProyectoMicroSQL.Controllers
                         
                         Data.Instancia.Arboles[nombreTabla].ListaVariables.Add(linea[0]);
                         
-                        info.ContadorChar = info.ContadorDT = info.ContadorChar = 0;
                         switch (linea[1])
                         {
                             case "INT":
-                                List<string> listaint = new List<string>();
-                                info.Variables.Add(linea[0], listaint);
-                                info.ContadorInt++;
+                                if(Data.Instancia.listaVariables[nombreTabla].ContadorInt <= 3)
+                                {
+                                    List<string> listaint = new List<string>();
+                                    Data.Instancia.listaVariables[nombreTabla].Variables.Add(linea[0], listaint);
+                                    Data.Instancia.listaVariables[nombreTabla].ContadorInt++;
+                                }else
+                                {
+                                    ViewBag.MensajeError = "No se puede agregar mas variables de este tipo de dato\rSe omitieron las intrucciones siguientes a esta excepcion";
+                                    ExisteError = true;
+                                }
                                 break;
                             case "VARCHAR(100)":
-                                List<string> listachar = new List<string>();
-                                info.Variables.Add(linea[0], listachar);
-                                info.ContadorChar++;
+                                if (Data.Instancia.listaVariables[nombreTabla].ContadorChar <= 3)
+                                {
+                                    List<string> listaChar = new List<string>();
+                                    Data.Instancia.listaVariables[nombreTabla].Variables.Add(linea[0], listaChar);
+                                    Data.Instancia.listaVariables[nombreTabla].ContadorChar++;
+                                }
+                                else
+                                {
+                                    ViewBag.MensajeError = "No se puede agregar mas variables de este tipo de dato\rSe omitieron las intrucciones siguientes a esta excepcion";
+                                    ExisteError = true;
+                                }
                                 break;
                             case "DATETIME":
-                                List<string> listaDT = new List<string>();
-                                info.Variables.Add(linea[0], listaDT);
-                                info.ContadorDT++;
+                                if (Data.Instancia.listaVariables[nombreTabla].ContadorDT <= 3)
+                                {
+                                    List<string> listaDT = new List<string>();
+                                    Data.Instancia.listaVariables[nombreTabla].Variables.Add(linea[0], listaDT);
+                                    Data.Instancia.listaVariables[nombreTabla].ContadorDT++;
+                                }
+                                else
+                                {
+                                    ViewBag.MensajeError = "No se puede agregar mas variables de este tipo de dato\rSe omitieron las intrucciones siguientes a esta excepcion";
+                                    ExisteError = true;
+                                }
                                 break;
                             default:
-                                ViewBag.MensajeError = "TIPO DE DATO NO ADMITIDO";
+                                ViewBag.MensajeError = "TIPO DE DATO NO ADMITIDO\rSe omitio las instrucciones posteriores a esta excepcion";
+                                ExisteError = true;
                                 break;
                         }
                     }
-                    
                     ViewBag.MensajeError = nombreTabla + ": Creacion exitosa de la tabla";
                 }
                 else
@@ -369,6 +406,7 @@ namespace ProyectoMicroSQL.Controllers
                     Data.Instancia.ArbolesBPlus.Remove(nombreTabla);
 
                     ViewBag.MensajeError = "Sintaxis incorrecta: '(' omitido al inicio";
+                    ExisteError = true;
                 }
             }
         }
@@ -416,9 +454,9 @@ namespace ProyectoMicroSQL.Controllers
 
                     for (int i = 0; i < VariablesAAgregar.Count; i++)
                     {
-                        if (VariablesAAgregar.Count == DatosDeVariables.Count && info.Variables.ContainsKey(VariablesAAgregar[i]))
+                        if (VariablesAAgregar.Count == DatosDeVariables.Count && Data.Instancia.listaVariables[nombreTabla].Variables.ContainsKey(VariablesAAgregar[i]))
                         {
-                            var LAux = info.Variables[VariablesAAgregar[i]];
+                            var LAux = Data.Instancia.listaVariables[nombreTabla].Variables[VariablesAAgregar[i]];
                             LAux.Add(DatosDeVariables[i]);
                             Reg.Valores.Add(DatosDeVariables[i]);
                             Data.Instancia.reg.Valores.Add(DatosDeVariables[i]);
@@ -438,7 +476,7 @@ namespace ProyectoMicroSQL.Controllers
                     }else
                     {
                         SeleccionoCreate = true;
-                        //Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg);
+                        Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg, Grado);
                         ViewBag.MensajeError = nombreTabla + ": Insercion exitosa";
                     }
                 }
@@ -526,6 +564,100 @@ namespace ProyectoMicroSQL.Controllers
                     return 0;
                 }
             }
+
+            else if(instrucciones.Count > 6)
+            {
+                SeleccionoSelectFiltrado = true;
+                SeleccionoSelect = true;
+                Data.Instancia.VariablesFiltradas.Clear();
+                Data.Instancia.RegistrosVariablesFiltradas.Clear();
+                char[] lineaChar;
+                int numerodelineainstrucciones = 1;
+                while(instrucciones[numerodelineainstrucciones] != "FROM")
+                {
+                    lineaChar = instrucciones[numerodelineainstrucciones].ToCharArray();
+                    if(lineaChar.Last() == ',')
+                    {
+                        Data.Instancia.VariablesFiltradas.Add(instrucciones[numerodelineainstrucciones].Split(',')[0]);
+                    }
+                    else
+                    {
+                        Data.Instancia.VariablesFiltradas.Add(instrucciones[numerodelineainstrucciones]);
+                    }
+                    numerodelineainstrucciones++;
+                }
+                Data.Instancia.nombreTabla = instrucciones[numerodelineainstrucciones + 1];
+                nombreTabla = Data.Instancia.nombreTabla;
+                List<int> posicionesVariables = new List<int>();
+                int ContadorVariables = 0;
+                for (int i = 0; i < Data.Instancia.Arboles[nombreTabla].ListaVariables.Count; i++)
+                {
+                    if (Data.Instancia.VariablesFiltradas.Contains(Data.Instancia.Arboles[nombreTabla].ListaVariables[i]))
+                    {
+                        posicionesVariables.Add(i);
+                        ContadorVariables++;
+                    }
+                }
+
+                if(ContadorVariables != Data.Instancia.VariablesFiltradas.Count)
+                {
+                    ExisteError = true;
+                    ViewBag.MensajeError = "Una variable no existe\rSe detuvo la ejecucion de instrucciones";
+                    SeleccionoSelect = false;
+                    SeleccionoSelectFiltrado = false;
+                }
+                else if (instrucciones[numerodelineainstrucciones + 2] != "GO" && instrucciones[numerodelineainstrucciones + 2] != "GO\r")
+                {
+                    string[] lineaID = instrucciones[numerodelineainstrucciones + 3].Split(' ');
+                    int IDABuscar = int.Parse(lineaID[2]);
+
+                    foreach (var nodo in Data.Instancia.listaNodos)
+                    {
+                        for (int i = 0; i < nodo.Valores.Count; i++)
+                        {
+                            if (nodo.Valores[i].IDPrimaryKey == IDABuscar)
+                            {
+                                Estructuras_de_Datos.Registro registrofiltrado = new Estructuras_de_Datos.Registro();
+                                registrofiltrado.IDPrimaryKey = nodo.Valores[i].IDPrimaryKey;
+
+                                for (int j = 0; j < nodo.Valores[i].Valores.Count; j++)
+                                {
+                                    if (posicionesVariables.Contains(j - 1))
+                                    {
+                                        registrofiltrado.Valores.Add(nodo.Valores[i].Valores[j - 1]);
+                                    }
+                                }
+                                Data.Instancia.RegistrosVariablesFiltradas.Add(registrofiltrado);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var nodo in Data.Instancia.listaNodos)
+                    {
+                        for (int i = 0; i < nodo.Valores.Count; i++)
+                        {
+                            Estructuras_de_Datos.Registro registrofiltrado = new Estructuras_de_Datos.Registro();
+                            registrofiltrado.IDPrimaryKey = nodo.Valores[i].IDPrimaryKey;
+
+                            for (int j = 0; j < nodo.Valores[i].Valores.Count; j++)
+                            {
+                                if (posicionesVariables.Contains(j - 1))
+                                {
+                                    registrofiltrado.Valores.Add(nodo.Valores[i].Valores[j - 1]);
+                                }
+                            }
+                            Data.Instancia.RegistrosVariablesFiltradas.Add(registrofiltrado);
+                        }
+                    }
+                }
+
+
+                return 1;
+            }
+
+
             else if(Data.Instancia.Arboles.ContainsKey(nombreTabla) == false)
             {
                 ExisteError = true;

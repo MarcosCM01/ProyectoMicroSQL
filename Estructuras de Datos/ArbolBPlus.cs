@@ -22,15 +22,14 @@ namespace Estructuras_de_Datos
         #endregion
 
         #region Insercion
-        public void InsertarNodo(T value)
+        public void InsertarNodo(T value, int grado)
         {
             if (root == null)
             {
                 root = new NodoBP<T>();
-                root.AsignarGrado(root, 5);
+                root.AsignarGrado(root, grado);
                 root.values.Add(value);
                 root.id = 1;
-                //newNodo = root;
             }
             else { Insertar2(root, value); }
 

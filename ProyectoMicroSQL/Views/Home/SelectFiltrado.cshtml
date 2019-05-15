@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "Grid";
+}
+
+<h2>Tabla: @ProyectoMicroSQL.Singleton.Data.Instancia.nombreTabla</h2>
+
+<p style="color:red;">@ViewBag.MensajeError</p>
+
+<p>
+    @Html.ActionLink("Regresar a menu", "Menu")
+</p>
+<p>
+    @Html.ActionLink("Regresar a tablas", "VerTablas")
+</p>
+
+<table class="table">
+    <tr>
+        @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.VariablesFiltradas)
+        {
+            <th>@item</th>
+        }
+    </tr>
+
+    @foreach (var registro in ProyectoMicroSQL.Singleton.Data.Instancia.RegistrosVariablesFiltradas)
+    {
+        <tr>
+            @foreach(var dato in registro.Valores)
+            {
+            <td>
+                @dato
+            </td>
+            }
+        </tr>
+    }
+
+</table>
