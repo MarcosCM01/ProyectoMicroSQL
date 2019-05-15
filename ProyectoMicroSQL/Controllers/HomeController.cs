@@ -17,6 +17,8 @@ namespace ProyectoMicroSQL.Controllers
         static bool ExisteError = false;
         static bool SeCargoDiccionario = false;
         static int Grado;
+        static bool SeleccionoSelect = false;
+        static bool SeleccionoCreate = false;
 
         public ActionResult AsignarGrado()
         {
@@ -79,6 +81,7 @@ namespace ProyectoMicroSQL.Controllers
 
         public ActionResult CodigoSQL()
         {
+            SeleccionoSelect = false;
             ExisteError = false;
             return View();
         }
@@ -168,7 +171,18 @@ namespace ProyectoMicroSQL.Controllers
                 }
                 
             }
-            return RedirectToAction("Grid", "Home", new { Nombre = Data.Instancia.nombreTabla });
+            if(SeleccionoSelect == true)
+            {
+                return View("Select");
+            }
+            else if(SeleccionoCreate == true)
+            {
+                return RedirectToAction("Grid", "Home", new { Nombre = Data.Instancia.nombreTabla });
+            }else
+            {
+                return View();
+            }
+            
         }
 
         public List<string> SeparandoInstrucciones(string codigo)
@@ -253,7 +267,8 @@ namespace ProyectoMicroSQL.Controllers
                             {
                                 ExisteError = true;
                                 ViewBag.MensajeError = nombreTabla + ": Tabla Existente, se ejecuto instrucciones anteriores a esta excepcion";
-                            }else
+                            }
+                            else
                             {
                                 CrearTabla(nombreTabla, instrucciones);
                             }
@@ -422,6 +437,7 @@ namespace ProyectoMicroSQL.Controllers
                         ExisteError = true;
                     }else
                     {
+                        SeleccionoCreate = true;
                         //Data.Instancia.ArbolesBPlus[nombreTabla].InsertarNodo(Reg);
                         ViewBag.MensajeError = nombreTabla + ": Insercion exitosa";
                     }
@@ -471,9 +487,57 @@ namespace ProyectoMicroSQL.Controllers
             }
         }
 
-        public void Select(string nombreTabla, List<string> instrucciones)
+        public int Select(string nombreTabla, List<string> instrucciones)
         {
-
+            int IDBuscado = 0;
+            string[] linea;
+            string[] nombre = instrucciones[3].Split(' ');
+            nombreTabla = nombre[0];
+            Data.Instancia.nombreTabla = nombreTabla;
+            if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && nombre[1] == "WHERE")
+            {
+                Data.Instancia.Arboles[nombreTabla].VaciandoListaNodosBuscados();
+                linea = instrucciones[instrucciones.Count- 2].Split(' ');
+                if(linea[0] == "ID" && linea[1] == "=")
+                {
+                    IDBuscado = int.Parse(linea[2]);
+                    Estructuras_de_Datos.Registro RegBuscado = new Estructuras_de_Datos.Registro();
+                    RegBuscado.IDPrimaryKey = IDBuscado;
+                    if (Data.Instancia.Arboles[nombreTabla].Busqueda(RegBuscado, Data.Instancia.Arboles[nombreTabla].Raiz) == 1)
+                    {
+                        Data.Instancia.listaNodosFiltrados = Data.Instancia.Arboles[nombreTabla].RetornandoListaDeNodosBuscados();
+                        Data.Instancia.IDEncontrado = Data.Instancia.Arboles[nombreTabla].RetornandoIDDeValorBuscado();
+                        SeleccionoSelect = true;
+                        ExisteError = true;
+                        return 1;
+                    }
+                    else
+                    {
+                        ViewBag.MensajeError = nombreTabla + ": No se encontro registro buscado, se detuvo en este punto la ejecucion de instrucciones";
+                        ExisteError = true;
+                        SeleccionoSelect = true;
+                        return 0;
+                    }
+                }
+                else
+                {
+                    ExisteError = true;
+                    ViewBag.MensajeError = nombreTabla + ": ERROR DE SINTAXIS";
+                    return 0;
+                }
+            }
+            else if(Data.Instancia.Arboles.ContainsKey(nombreTabla) == false)
+            {
+                ExisteError = true;
+                ViewBag.MensajeError = nombreTabla + ": No existe tabla, se realizaron las intrucciones de los bloques anteriores a esta excepcion";
+                return 0;
+            }
+            else
+            {
+                ExisteError = true;
+                ViewBag.MensajeError = nombreTabla + ": ERROR DE SINTAXIS";
+                return 0;
+            }
         }
 
         public void DropTable(string nombreTabla)
@@ -574,7 +638,7 @@ namespace ProyectoMicroSQL.Controllers
                 {
                     ViewBag.Error = "Palabra a modificar no puede ser espacio en blanco";
                 }
-                else
+                else if(Data.Instancia.PalabrasReservadas.ContainsKey(llave) == false)
                 {
                     ViewBag.Error = "Palabra reservada no encontrada, revise de nuevo";
                 }

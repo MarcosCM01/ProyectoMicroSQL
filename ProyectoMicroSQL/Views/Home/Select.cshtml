@@ -5,14 +5,14 @@
 
 <h2>Tabla: @ProyectoMicroSQL.Singleton.Data.Instancia.nombreTabla</h2>
 
+<p style="color:red;">@ViewBag.MensajeError</p>
+
 <p>
     @Html.ActionLink("Regresar a menu", "Menu")
 </p>
 <p>
     @Html.ActionLink("Regresar a tablas", "VerTablas")
 </p>
-
-<h3>@ViewBag.MensajeError</h3>
 
 <table class="table">
     <tr>
@@ -22,18 +22,21 @@
         }
     </tr>
 
-    @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.listaNodos)
+    @foreach (var item in ProyectoMicroSQL.Singleton.Data.Instancia.listaNodosFiltrados)
     {
         for (int i = 0; i < item.Valores.Count; i++)
         {
+            if (ProyectoMicroSQL.Singleton.Data.Instancia.IDEncontrado == item.Valores[i].IDPrimaryKey)
+            {
             <tr>
                 @for (int j = 0; j < item.Valores[i].Valores.Count; j++)
                 {
                     <td>
-                        @item.Valores[i].Valores[j]
+                    @item.Valores[i].Valores[j]
                     </td>
                 }
             </tr>
+            }
         }
     }
 

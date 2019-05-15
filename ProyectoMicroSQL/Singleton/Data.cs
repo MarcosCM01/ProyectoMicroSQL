@@ -26,9 +26,6 @@ namespace ProyectoMicroSQL.Singleton
         public Dictionary<string, string> PalabrasReservadas = new Dictionary<string, string>();
         public Dictionary<string, string> PalabrasReservadasPredeterminadas = new Dictionary<string, string>();
 
-        public List<string> ListaV = new List<string>();
-        public List<string> ListaK = new List<string>();
-
         public string nombreTabla { get; set; }
         public List<string> NombresTabla = new List<string>();
 
@@ -42,13 +39,15 @@ namespace ProyectoMicroSQL.Singleton
 
         public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> NodosAMostrar = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
 
+        public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> listaNodosFiltrados = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
+        public List<string> VariablesFiltradas = new List<string>();
+        public int IDEncontrado { get; set; }
+
         public int LecturaCSV(string path)
         {
             try
             {
                 PalabrasReservadas.Clear();
-                ListaV.Clear();
-                ListaK.Clear();
                 string[] lineas = File.ReadAllLines(path);
                 var contador = 0;
                 foreach (var item in lineas)
@@ -63,8 +62,6 @@ namespace ProyectoMicroSQL.Singleton
                         }
 
                         PalabrasReservadas.Add(infolinea[0], infolinea[1]);
-                        ListaK.Add(infolinea[0]);
-                        ListaV.Add(infolinea[1]);
                     }
                     else
                     {

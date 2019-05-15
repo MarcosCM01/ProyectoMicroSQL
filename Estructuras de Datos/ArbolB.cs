@@ -154,7 +154,6 @@ namespace Estructuras_de_Datos
             
         }
 
-
         public void CreandoNodo(NodoB<T> nuevo, NodoB<T> nodo)
         {
             nuevo.max = nodo.max;
@@ -299,8 +298,10 @@ namespace Estructuras_de_Datos
         }
 
 
+        static List<NodoB<T>> NodoBuscado = new List<NodoB<T>>();
+        static int IDBuscado;
         static Registro val;
-        public Registro Busqueda(Registro valor, NodoB<T> Nodo)
+        public int Busqueda(Registro valor, NodoB<T> Nodo)
         {
             bool BEncontrado = false;
             foreach (var item in Nodo.Valores)
@@ -308,7 +309,8 @@ namespace Estructuras_de_Datos
                 if (item.CompareTo(valor) == 0)
                 {
                     BEncontrado = true;
-                    val = item;
+                    NodoBuscado.Add(Nodo);
+                    IDBuscado = item.IDPrimaryKey;
                     break;
                 }
             }
@@ -321,17 +323,30 @@ namespace Estructuras_de_Datos
             }
             else if (BEncontrado == true)
             {
-                return val;
+                return 1;
             }
             else if (Nodo.Hijos.Count == 0)
             {
-                throw new NotImplementedException();
+                return 0;
             }
             else
             {
-                return val;
+                return 0;
             }
 
+        }
+
+        public List<NodoB<T>> RetornandoListaDeNodosBuscados()
+        {
+            return NodoBuscado;
+        }
+        public void VaciandoListaNodosBuscados()
+        {
+            NodoBuscado.Clear();
+        }
+        public int RetornandoIDDeValorBuscado()
+        {
+            return IDBuscado;
         }
 
         public int BusquedaIDIgual(Registro valor, NodoB<T> Nodo)
