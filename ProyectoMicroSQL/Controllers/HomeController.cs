@@ -529,10 +529,15 @@ namespace ProyectoMicroSQL.Controllers
         {
             int IDBuscado = 0;
             string[] linea;
-            string[] nombre = instrucciones[3].Split(' ');
+            int cont = 0;
+            while(instrucciones[cont] != "FROM")
+            {
+                cont++;
+            }
+            string[] nombre = instrucciones[cont + 1].Split(' ');
             nombreTabla = nombre[0];
             Data.Instancia.nombreTabla = nombreTabla;
-            if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && nombre[1] == "WHERE")
+            if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && instrucciones[instrucciones.Count - 3] == "WHERE")
             {
                 Data.Instancia.Arboles[nombreTabla].VaciandoListaNodosBuscados();
                 linea = instrucciones[instrucciones.Count- 2].Split(' ');
@@ -564,8 +569,12 @@ namespace ProyectoMicroSQL.Controllers
                     return 0;
                 }
             }
-
-            else if(instrucciones.Count > 6)
+            else if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r"))
+            {
+                SeleccionoCreate = true;
+                return 1;
+            }
+            else if(instrucciones.Count > 5)
             {
                 SeleccionoSelectFiltrado = true;
                 SeleccionoSelect = true;
@@ -576,7 +585,14 @@ namespace ProyectoMicroSQL.Controllers
                 while(instrucciones[numerodelineainstrucciones] != "FROM")
                 {
                     lineaChar = instrucciones[numerodelineainstrucciones].ToCharArray();
-                    if(lineaChar.Last() == ',')
+                    if (lineaChar.Last() == ',' && instrucciones[numerodelineainstrucciones + 1] == "FROM")
+                    {
+                        ViewBag.MensajeError = "Mala sintaxis, la ultima variable no puede tener coma al final";
+                        ExisteError = true;
+                        SeleccionoSelect = SeleccionoSelectFiltrado = false ;
+                        break;
+                    }
+                    else if (lineaChar.Last() == ',')
                     {
                         Data.Instancia.VariablesFiltradas.Add(instrucciones[numerodelineainstrucciones].Split(',')[0]);
                     }
@@ -652,12 +668,8 @@ namespace ProyectoMicroSQL.Controllers
                         }
                     }
                 }
-
-
                 return 1;
             }
-
-
             else if(Data.Instancia.Arboles.ContainsKey(nombreTabla) == false)
             {
                 ExisteError = true;
