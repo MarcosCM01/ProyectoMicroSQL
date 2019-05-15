@@ -103,7 +103,7 @@ namespace Estructuras_de_Datos
         }
 
 
-        public int Insertar(NodoB<T> Nodo, Registro valor)
+        public int Insertar(NodoB<T> Nodo, Registro valor, int Grado)
         {
             int IDIguales = BusquedaIDIgual(valor, Raiz);
             if(IDIguales == 1)
@@ -112,7 +112,7 @@ namespace Estructuras_de_Datos
             }
             else if (Raiz.id == 0)
             {
-                Raiz.AsignarGrado(Raiz, 5);
+                Raiz.AsignarGrado(Raiz, Grado);
                 Raiz.Valores.Add(valor);
                 Raiz.id = 1;
                 Nodo = Raiz;
@@ -135,7 +135,7 @@ namespace Estructuras_de_Datos
             {
                 var NodoHijo = new NodoB<T>();
                 NodoHijo = Nodo.Hijos[ObteniendoPosicionHijo(Nodo, valor)]; //BUSCA POSICION CORRESPONDIENTE
-                Insertar(NodoHijo, valor);
+                Insertar(NodoHijo, valor, Grado);
                 if (ExisteEspacio(Nodo) == false)
                 {
                     Separar(Nodo);
@@ -197,7 +197,7 @@ namespace Estructuras_de_Datos
 
                 for (int i = 0; i < Nodo.Padre.Hijos.Count; i++)
                 {
-                    if (Nodo.Padre.Hijos[i].Valores.Count > 4)
+                    if (Nodo.Padre.Hijos[i].Valores.Count > Nodo.max)
                     {
                         indice = i;
                         break;
@@ -214,7 +214,7 @@ namespace Estructuras_de_Datos
                 Nodo.Padre.Hijos.Sort((x, y) => x.Valores[0].CompareTo(y.Valores[0]));
                 Nodo = null;
             }//Si es la raiz y aun caben valores en el nodo
-            else if (Nodo.Padre == null && Nodo.Hijos.Count < 5)
+            else if (Nodo.Padre == null && Nodo.Hijos.Count < Nodo.max)
             {
                 CreandoNodo(izq, Nodo);
                 CreandoNodo(der, izq);
@@ -224,7 +224,7 @@ namespace Estructuras_de_Datos
                 Nodo.Valores.Sort((x, y) => x.CompareTo(y));
                 Nodo.Valores = padreAux.Valores;
             }//Si es raiz y no caben valores
-            else if (Nodo.Padre == null && Nodo.Hijos.Count >= 5)
+            else if (Nodo.Padre == null && Nodo.Hijos.Count >= Nodo.max + 1)
             {
                 CreandoNodo(izq, Nodo);
                 CreandoNodo(der, izq);

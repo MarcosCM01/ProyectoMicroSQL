@@ -176,6 +176,7 @@
     <Content Include="Views\Home\Grid.cshtml" />
     <Content Include="Views\Home\VerTablas.cshtml" />
     <Content Include="Views\Home\Select.cshtml" />
+    <Content Include="Views\Home\AsignarGrado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

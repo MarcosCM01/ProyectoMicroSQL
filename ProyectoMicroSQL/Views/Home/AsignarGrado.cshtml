@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Personalizar";
+}
+
+<h2>Asignacion de Grado para Arbol</h2>
+
+
+<div class="jumbotron">
+    <h2 class="display-3"> PROYECTO MICRO SQL: Escoja el grado de los arboles que almacenaran su informacion</h2>
+    <h4 class="display-3"> Valor predetermiado si no envia nada: 5.</h4>
+    <p class="lead">
+        @using (Html.BeginForm("AsignarGrado", "Home", FormMethod.Post))
+        {
+        <p>Ingrese Grado para el arbol de datos:</p>
+        <input type="text" name="grado" id="grado" />
+
+        <br />
+        <input type="submit" value="Aceptar" class="btn btn-outline-success" />
+    }
+
+    </div>

@@ -81,39 +81,38 @@ namespace ProyectoMicroSQL.Singleton
 
         public void EscribirArbol(Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro> Nodo)
         {
-            string NodosAEscribir = JsonConvert.SerializeObject(listaNodos, Formatting.Indented);
-            using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+            //string NodosAEscribir = JsonConvert.SerializeObject(listaNodos, Formatting.Indented);
+            //using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+            //{
+            //    Writer.WriteLine(NodosAEscribir);
+            //}
+
+            if (Nodo.Hijos.Count > 0)
             {
-                Writer.WriteLine(NodosAEscribir);
+                EscribirArbol(Nodo.Hijos[0]);
+
+                var NodoAEscribir = JsonConvert.SerializeObject(Nodo);
+                using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+                {
+                    Writer.WriteLine(NodoAEscribir);
+                }
+
+                for (int i = 1; i < Nodo.Hijos.Count; i++)
+                {
+                    using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+                    {
+                        Writer.WriteLine(NodoAEscribir);
+                    }
+                }
             }
-
-            //if (Nodo.Hijos.Count > 0)
-            //{
-            //    EscribirArbol(Nodo.Hijos[0]);
-
-            //    string NodoAEscribir = JsonConvert.SerializeObject(Nodo, Formatting.Indented);
-            //    var NodoAEscribir = JsonConvert.SerializeObject(Nodo);
-            //    using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
-            //    {
-            //        Writer.WriteLine(NodoAEscribir);
-            //    }
-
-            //    for (int i = 1; i < Nodo.Hijos.Count; i++)
-            //    {
-            //        using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
-            //        {
-            //            Writer.WriteLine(NodoAEscribir);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    string NodoAEscribir = JsonConvert.SerializeObject(Nodo, Formatting.Indented);
-            //    using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
-            //    {
-            //        Writer.WriteLine(NodoAEscribir);
-            //    }
-            //}
+            else
+            {
+                string NodoAEscribir = JsonConvert.SerializeObject(Nodo, Formatting.Indented);
+                using (var Writer = new StreamWriter("C:/microSQL/arbolesb/" + nombreTabla + ".arbolb"))
+                {
+                    Writer.WriteLine(NodoAEscribir);
+                }
+            }
 
         }
         public void LecturaTablas(string path)

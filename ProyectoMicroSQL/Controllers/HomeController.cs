@@ -16,7 +16,27 @@ namespace ProyectoMicroSQL.Controllers
         public static Estructuras_de_Datos.Info info = new Estructuras_de_Datos.Info();
         static bool ExisteError = false;
         static bool SeCargoDiccionario = false;
+        static int Grado;
 
+        public ActionResult AsignarGrado()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AsignarGrado(FormCollection collection)
+        {
+            if(collection["grado"] == "")
+            {
+                Grado = 5;
+            }
+            else
+            {
+                Grado = int.Parse(collection["grado"]);
+            }
+            
+            ViewBag.Mensaje = "Grado de arbol :" + Grado;
+            return RedirectToAction("Menu");
+        }
         public ActionResult CargarTablas()
         {
             return View();
@@ -396,7 +416,7 @@ namespace ProyectoMicroSQL.Controllers
                         }
                     }
                     Reg.IDPrimaryKey = int.Parse(DatosDeVariables[0]);
-                    if (Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg) != 0)
+                    if (Data.Instancia.Arboles[nombreTabla].Insertar(Data.Instancia.Arboles[nombreTabla].Raiz, Reg, Grado) != 0)
                     {
                         ViewBag.MensajeError = nombreTabla + ": ID de registro repetido, cambie el ID para su registro correcto, se omitio las instrucciones despues de este bloque";
                         ExisteError = true;
