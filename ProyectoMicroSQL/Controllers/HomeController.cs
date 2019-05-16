@@ -528,6 +528,81 @@ namespace ProyectoMicroSQL.Controllers
             }
         }
 
+        public void OperadorDeBusquedaLike(string[] VectorImportante, List<string> instrucciones)
+        {
+            Data.Instancia.RegistrosVariablesFiltradas.Clear();
+            Data.Instancia.VariablesFiltradas.Clear();
+            var ListaNombreVariables = new List<string>();
+            var con = 0;
+            for (int i = 1; i < instrucciones.Count - 1; i++)
+            {
+                char[] VectorDeChars = instrucciones[i].ToCharArray();
+                if (VectorDeChars[VectorDeChars.Length - 1] == ',')
+                {
+                    string[] ParaAlmacenaje = instrucciones[i].Split(',');
+                    ListaNombreVariables.Add(ParaAlmacenaje[0]);
+                    con++;
+                }
+            }
+            ListaNombreVariables.Add(instrucciones[con + 1]);
+            var contador = 0;
+            while (instrucciones[contador] != "FROM")
+            {
+                contador++;
+            }
+            var NombreTabla = instrucciones[contador + 1];
+            if (Data.Instancia.ArbolesBPlus.ContainsKey(NombreTabla))
+            {
+                string c = VectorImportante[VectorImportante.Length - 1];
+                string[] chars = c.Split('%');
+                char[] CaracteresBuscados = chars[0].ToCharArray();
+                Data.Instancia.ArbolesBPlus[NombreTabla].InicioDeBusqueda(chars[0]);
+
+
+
+                //LISTA NOMBRE VARIABLES (LA DEL OPERADOR)
+                List<Estructuras_de_Datos.Registro> ListaDelBPlus = new List<Estructuras_de_Datos.Registro>();
+                ListaDelBPlus = Data.Instancia.ArbolesBPlus[NombreTabla].RetornarListaAExportar();
+                List<string> ListaAMostrarGrid = new List<string>();
+                //ListaNombreVariables; //ID, MARCA, LINEA
+                List<int> listaEnteros = new List<int>();
+                for (int i = 0; i < ListaNombreVariables.Count; i++)
+                {
+                    if (Data.Instancia.Arboles[NombreTabla].ListaVariables.Contains(ListaNombreVariables[i]))
+                    {
+                        listaEnteros.Add(i);
+                    }
+                }
+                Data.Instancia.VariablesFiltradas.Clear();
+                Data.Instancia.RegistrosVariablesFiltradas.Clear();
+
+                Data.Instancia.VariablesFiltradas = ListaNombreVariables;
+
+
+                for (int i = 0; i < ListaDelBPlus.Count; i++)
+                {
+                    Estructuras_de_Datos.Registro RegistroFiltrado = new Estructuras_de_Datos.Registro();
+                    for (int j = 0; j < ListaDelBPlus[i].Valores.Count; j++)
+                    {
+                        if (listaEnteros.Contains(j))
+                        {
+                            RegistroFiltrado.Valores.Add(ListaDelBPlus[i].Valores[j]);
+                        }
+                    }
+                    Data.Instancia.RegistrosVariablesFiltradas.Add(RegistroFiltrado);
+                }
+
+
+
+                SeleccionoSelect = true;
+                SeleccionoSelectFiltrado = true;
+            }
+            else
+            {
+                ViewBag.MensajeError = "NO EXISTE DICHA TABLA";
+            }
+        }
+
         public int Select(string nombreTabla, List<string> instrucciones)
         {
             int IDBuscado = 0;
@@ -556,7 +631,14 @@ namespace ProyectoMicroSQL.Controllers
                 }
             }
 
-            if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && instrucciones[instrucciones.Count - 3] == "WHERE")
+            string[] ParaBuscadorLike = instrucciones[instrucciones.Count - 2].Split(' ');
+            if (ParaBuscadorLike[1] == "LIKE" || ParaBuscadorLike[1] == "like") //PARA BUSCADOR LIKE
+            {
+                OperadorDeBusquedaLike(ParaBuscadorLike, instrucciones);
+                return 1;
+            }
+
+            else if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && instrucciones[instrucciones.Count - 3] == "WHERE")
             {
                 Data.Instancia.Arboles[nombreTabla].VaciandoListaNodosBuscados();
                 linea = instrucciones[instrucciones.Count - 2].Split(' ');

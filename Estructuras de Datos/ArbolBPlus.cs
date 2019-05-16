@@ -48,7 +48,7 @@ namespace Estructuras_de_Datos
                 Insertar2(NodeSun, value); //RECURSIVIDAD
                 //METODO DE BUSCAR POSICION CORRESPONDIENTE
             }
-            if (ExisteEspacio(nodo) == false && nodo.padre != null)
+            if (ExisteEspacio(nodo) == false)
             {
                 SepararNodo(nodo);
                 //METODO DE SEPARAR 
@@ -396,6 +396,43 @@ namespace Estructuras_de_Datos
             }
             izquierdo.hermano = null;
         }
+        #endregion
+
+        #region BusquedaLike
+        public void InicioDeBusqueda(string caracteresBuscados)
+        {
+            BusquedaLike(root, caracteresBuscados);
+        }
+        static List<Registro> ListaAExportar = new List<Registro>();
+
+        public List<Registro> RetornarListaAExportar()
+        {
+            return ListaAExportar;
+        }
+        public void BusquedaLike(NodoBP<T> node, string caracteresBuscados)
+        {
+            if (node.hijos.Count > 0) //Es sub arbol
+            {
+                BusquedaLike(node.hijos[0], caracteresBuscados);
+            }
+
+            for (int i = 0; i < node.values.Count; i++)
+            {
+                for (int j = 0; j < node.values[i].Valores.Count; j++)
+                {
+                    string prueba = node.values[i].Valores[j];
+                    if (prueba.Contains(caracteresBuscados))
+                    {
+                        ListaAExportar.Add(node.values[i]);
+                    }
+                }
+            }
+            if (node.hermano != null)
+            {
+                BusquedaLike(node.hermano, caracteresBuscados);
+            }
+        }
+
         #endregion
         public IEnumerator<T> GetEnumerator()
         {
