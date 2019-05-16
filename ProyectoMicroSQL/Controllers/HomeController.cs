@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoMicroSQL.Singleton;
 using Newtonsoft.Json;
+using System.Web.UI.WebControls;
+using System.IO;
+using ClosedXML.Excel;
 
 namespace ProyectoMicroSQL.Controllers
 {
@@ -537,6 +540,22 @@ namespace ProyectoMicroSQL.Controllers
             string[] nombre = instrucciones[cont + 1].Split(' ');
             nombreTabla = nombre[0];
             Data.Instancia.nombreTabla = nombreTabla;
+
+            foreach (var nodo in Data.Instancia.listaNodos)
+            {
+                for (int i = 0; i < nodo.Valores.Count; i++)
+                {
+                    Estructuras_de_Datos.Registro registrofiltrado = new Estructuras_de_Datos.Registro();
+                    registrofiltrado.IDPrimaryKey = nodo.Valores[i].IDPrimaryKey;
+
+                    for (int j = 0; j < nodo.Valores[i].Valores.Count; j++)
+                    {
+                        registrofiltrado.Valores.Add(nodo.Valores[i].Valores[j]);
+                    }
+                    Data.Instancia.RegistrosCompletos.Add(registrofiltrado);
+                }
+            }
+
             if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && instrucciones[instrucciones.Count - 3] == "WHERE")
             {
                 Data.Instancia.Arboles[nombreTabla].VaciandoListaNodosBuscados();
@@ -553,6 +572,43 @@ namespace ProyectoMicroSQL.Controllers
                         SeleccionoSelect = true;
                         ExisteError = true;
                         bool EscrituraHecha = false;
+
+                        foreach (var nodo in Data.Instancia.listaNodosFiltrados)
+                        {
+                            for (int i = 0; i < nodo.Valores.Count; i++)
+                            {
+                                Estructuras_de_Datos.Registro registrofiltrado = new Estructuras_de_Datos.Registro();
+                                registrofiltrado.IDPrimaryKey = nodo.Valores[i].IDPrimaryKey;
+
+                                for (int j = 0; j < nodo.Valores[i].Valores.Count; j++)
+                                {
+                                    registrofiltrado.Valores.Add(nodo.Valores[i].Valores[j]);
+                                }
+                                Data.Instancia.RegistrosVariablesFiltradas.Add(registrofiltrado);
+                            }
+                        }
+
+                        using (var workbook = new XLWorkbook())
+                        {
+                            var worksheet = workbook.Worksheets.Add("Datos");
+                            int contCell = 1;
+                            foreach (var item in Data.Instancia.Arboles[Data.Instancia.nombreTabla].ListaVariables)
+                            {
+                                worksheet.Cell(1, contCell).Value = item;
+                                contCell++;
+                            }
+                            for (int i = 2; i <= Data.Instancia.RegistrosVariablesFiltradas.Count + 1; i++)
+                            {
+                                for (int j = 1; j <= Data.Instancia.RegistrosVariablesFiltradas[i - 2].Valores.Count; j++)
+                                {
+                                    worksheet.Cell(i, j).Value = Data.Instancia.RegistrosVariablesFiltradas[i - 2].Valores[j - 1];
+                                }
+                            }
+                            MemoryStream MS = new MemoryStream();
+                            workbook.SaveAs(("C:/MicroSQL/SeleccionExcel/Seleccion " + nombreTabla + " por ID especifico " + IDBuscado + " todos los campos.xlsx"));
+                            MS.Position = 0;
+                        }
+
                         using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + nombreTabla + " por ID especifico " + IDBuscado + " todos los campos.csv"))
                         {
                             foreach (var item in Data.Instancia.Arboles[Data.Instancia.nombreTabla].ListaVariables)
@@ -600,6 +656,27 @@ namespace ProyectoMicroSQL.Controllers
             else if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r"))
             {
                 SeleccionoCreate = true;
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Datos");
+                    int contCell = 1;
+                    foreach (var item in Data.Instancia.Arboles[Data.Instancia.nombreTabla].ListaVariables)
+                    {
+                        worksheet.Cell(1, contCell).Value = item;
+                        contCell++;
+                    }
+                    for (int i = 2; i <= Data.Instancia.RegistrosCompletos.Count + 1; i++)
+                    {
+                        for (int j = 1; j <= Data.Instancia.RegistrosCompletos[i - 2].Valores.Count; j++)
+                        {
+                            worksheet.Cell(i, j).Value = Data.Instancia.RegistrosCompletos[i - 2].Valores[j - 1];
+                        }
+                    }
+                    MemoryStream MS = new MemoryStream();
+                    workbook.SaveAs("C:/MicroSQL/SeleccionExcel/Seleccion " + nombreTabla + " todos los campos.xlsx");
+                    MS.Position = 0;
+                }
 
                 using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + nombreTabla + " todos los campos.csv"))
                 {
@@ -699,6 +776,29 @@ namespace ProyectoMicroSQL.Controllers
                     {
                         variablesdecsv += item + ", ";
                     }
+
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("Datos");
+
+                        for (int i = 1; i <= Data.Instancia.VariablesFiltradas.Count; i++)
+                        {
+                            worksheet.Cell(1, i).Value = Data.Instancia.VariablesFiltradas[i - 1];
+                        }
+
+                        for (int i = 2; i <= Data.Instancia.RegistrosVariablesFiltradas.Count + 1; i++)
+                        {
+                            for (int j = 1; j <= Data.Instancia.RegistrosVariablesFiltradas[i - 2].Valores.Count; j++)
+                            {
+                                worksheet.Cell(i, j).Value = Data.Instancia.RegistrosVariablesFiltradas[i - 2].Valores[j - 1];
+                            }
+                        }
+
+                        MemoryStream MS = new MemoryStream();
+                        workbook.SaveAs("C:/MicroSQL/SeleccionExcel/" + variablesdecsv + ".xlsx");
+                        MS.Position = 0;
+                    }
+
                     using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + variablesdecsv + ".csv"))
                     {
                         foreach (var item in Data.Instancia.VariablesFiltradas)
@@ -741,6 +841,30 @@ namespace ProyectoMicroSQL.Controllers
                     foreach (var item in Data.Instancia.VariablesFiltradas)
                     {
                         variablescsv += item + ", ";
+                    }
+
+
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("Datos");
+
+                        for (int i = 1; i <= Data.Instancia.VariablesFiltradas.Count; i++)
+                        {
+                            worksheet.Cell(1, i).Value = Data.Instancia.VariablesFiltradas[i - 1];
+                        }
+
+                        for (int i = 2; i <= Data.Instancia.RegistrosVariablesFiltradas.Count + 1; i++)
+                        {
+                            for (int j = 1; j <= Data.Instancia.RegistrosVariablesFiltradas[i -2].Valores.Count; j++)
+                            {
+                                worksheet.Cell(i, j).Value = Data.Instancia.RegistrosVariablesFiltradas[i - 2].Valores[j - 1];
+                            }
+                        }
+
+                        MemoryStream MS = new MemoryStream();
+                        workbook.SaveAs("C:/MicroSQL/SeleccionExcel/" + variablescsv + ".xlsx");
+                        MS.Position = 0;
+                        
                     }
 
                     using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + variablescsv + ".csv"))

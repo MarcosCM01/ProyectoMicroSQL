@@ -42,6 +42,7 @@ namespace ProyectoMicroSQL.Singleton
         public List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>> listaNodosFiltrados = new List<Estructuras_de_Datos.NodoB<Estructuras_de_Datos.Registro>>();
         public List<string> VariablesFiltradas = new List<string>();
         public List<Estructuras_de_Datos.Registro> RegistrosVariablesFiltradas = new List<Estructuras_de_Datos.Registro>();
+        public List<Estructuras_de_Datos.Registro> RegistrosCompletos = new List<Estructuras_de_Datos.Registro>();
         public int IDEncontrado { get; set; }
 
         public int LecturaCSV(string path)
