@@ -530,7 +530,7 @@ namespace ProyectoMicroSQL.Controllers
             int IDBuscado = 0;
             string[] linea;
             int cont = 0;
-            while(instrucciones[cont] != "FROM")
+            while (instrucciones[cont] != "FROM")
             {
                 cont++;
             }
@@ -540,8 +540,8 @@ namespace ProyectoMicroSQL.Controllers
             if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r") && instrucciones[instrucciones.Count - 3] == "WHERE")
             {
                 Data.Instancia.Arboles[nombreTabla].VaciandoListaNodosBuscados();
-                linea = instrucciones[instrucciones.Count- 2].Split(' ');
-                if(linea[0] == "ID" && linea[1] == "=")
+                linea = instrucciones[instrucciones.Count - 2].Split(' ');
+                if (linea[0] == "ID" && linea[1] == "=")
                 {
                     IDBuscado = int.Parse(linea[2]);
                     Estructuras_de_Datos.Registro RegBuscado = new Estructuras_de_Datos.Registro();
@@ -552,6 +552,34 @@ namespace ProyectoMicroSQL.Controllers
                         Data.Instancia.IDEncontrado = Data.Instancia.Arboles[nombreTabla].RetornandoIDDeValorBuscado();
                         SeleccionoSelect = true;
                         ExisteError = true;
+                        bool EscrituraHecha = false;
+                        using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + nombreTabla + " por ID especifico " + IDBuscado + " todos los campos.csv"))
+                        {
+                            foreach (var item in Data.Instancia.Arboles[Data.Instancia.nombreTabla].ListaVariables)
+                            {
+                                writer.Write(item + ";");
+                            }
+                            writer.WriteLine();
+                            foreach (var item in Data.Instancia.listaNodosFiltrados)
+                            {
+                                for (int i = 0; i < item.Valores.Count; i++)
+                                {
+                                    if (Data.Instancia.IDEncontrado == item.Valores[i].IDPrimaryKey)
+                                    {
+                                        EscrituraHecha = true;
+                                        for (int j = 0; j < item.Valores[i].Valores.Count; j++)
+                                        {
+                                            writer.Write(item.Valores[i].Valores[j] + ";");
+                                        }
+                                    }
+                                    if (EscrituraHecha == true)
+                                    {
+                                        writer.WriteLine();
+                                    }
+
+                                }
+                            }
+                        }
                         return 1;
                     }
                     else
@@ -572,9 +600,29 @@ namespace ProyectoMicroSQL.Controllers
             else if (Data.Instancia.Arboles.ContainsKey(nombreTabla) && instrucciones[1] == "*" && instrucciones[2] == "FROM" && (instrucciones.Last() == "GO" || instrucciones.Last() == "GO\r"))
             {
                 SeleccionoCreate = true;
+
+                using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + nombreTabla + " todos los campos.csv"))
+                {
+                    foreach (var item in Data.Instancia.Arboles[Data.Instancia.nombreTabla].ListaVariables)
+                    {
+                        writer.Write(item + ";");
+                    }
+                    writer.WriteLine();
+                    foreach (var item in Data.Instancia.listaNodos)
+                    {
+                        for (int i = 0; i < item.Valores.Count; i++)
+                        {
+                            for (int j = 0; j < item.Valores[i].Valores.Count; j++)
+                            {
+                                writer.Write(item.Valores[i].Valores[j] + ";");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                }
                 return 1;
             }
-            else if(instrucciones.Count > 5)
+            else if (instrucciones.Count > 5)
             {
                 SeleccionoSelectFiltrado = true;
                 SeleccionoSelect = true;
@@ -582,14 +630,14 @@ namespace ProyectoMicroSQL.Controllers
                 Data.Instancia.RegistrosVariablesFiltradas.Clear();
                 char[] lineaChar;
                 int numerodelineainstrucciones = 1;
-                while(instrucciones[numerodelineainstrucciones] != "FROM")
+                while (instrucciones[numerodelineainstrucciones] != "FROM")
                 {
                     lineaChar = instrucciones[numerodelineainstrucciones].ToCharArray();
                     if (lineaChar.Last() == ',' && instrucciones[numerodelineainstrucciones + 1] == "FROM")
                     {
                         ViewBag.MensajeError = "Mala sintaxis, la ultima variable no puede tener coma al final";
                         ExisteError = true;
-                        SeleccionoSelect = SeleccionoSelectFiltrado = false ;
+                        SeleccionoSelect = SeleccionoSelectFiltrado = false;
                         break;
                     }
                     else if (lineaChar.Last() == ',')
@@ -602,8 +650,7 @@ namespace ProyectoMicroSQL.Controllers
                     }
                     numerodelineainstrucciones++;
                 }
-                Data.Instancia.nombreTabla = instrucciones[numerodelineainstrucciones + 1];
-                nombreTabla = Data.Instancia.nombreTabla;
+
                 List<int> posicionesVariables = new List<int>();
                 int ContadorVariables = 0;
                 for (int i = 0; i < Data.Instancia.Arboles[nombreTabla].ListaVariables.Count; i++)
@@ -615,7 +662,7 @@ namespace ProyectoMicroSQL.Controllers
                     }
                 }
 
-                if(ContadorVariables != Data.Instancia.VariablesFiltradas.Count)
+                if (ContadorVariables != Data.Instancia.VariablesFiltradas.Count)
                 {
                     ExisteError = true;
                     ViewBag.MensajeError = "Una variable no existe\rSe detuvo la ejecucion de instrucciones";
@@ -647,6 +694,28 @@ namespace ProyectoMicroSQL.Controllers
                             }
                         }
                     }
+                    string variablesdecsv = Data.Instancia.nombreTabla + " ID " + IDABuscar + " de ";
+                    foreach (var item in Data.Instancia.VariablesFiltradas)
+                    {
+                        variablesdecsv += item + ", ";
+                    }
+                    using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + variablesdecsv + ".csv"))
+                    {
+                        foreach (var item in Data.Instancia.VariablesFiltradas)
+                        {
+                            writer.Write(item + ";");
+                        }
+                        writer.WriteLine();
+                        foreach (var registro in Data.Instancia.RegistrosVariablesFiltradas)
+                        {
+                            foreach (var dato in registro.Valores)
+                            {
+                                writer.Write(dato + ";");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+
                 }
                 else
                 {
@@ -667,11 +736,38 @@ namespace ProyectoMicroSQL.Controllers
                             Data.Instancia.RegistrosVariablesFiltradas.Add(registrofiltrado);
                         }
                     }
+
+                    string variablescsv = Data.Instancia.nombreTabla + " de ";
+                    foreach (var item in Data.Instancia.VariablesFiltradas)
+                    {
+                        variablescsv += item + ", ";
+                    }
+
+                    using (StreamWriter writer = new StreamWriter("C:/MicroSQL/Selects/Seleccion " + variablescsv + ".csv"))
+                    {
+                        foreach (var item in Data.Instancia.VariablesFiltradas)
+                        {
+                            writer.Write(item + ";");
+                        }
+                        writer.WriteLine();
+                        foreach (var registro in Data.Instancia.RegistrosVariablesFiltradas)
+                        {
+                            foreach (var dato in registro.Valores)
+                            {
+                                writer.Write(dato + ";");
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+
                 }
+
+
+
                 return 1;
             }
             //PARA LA BUSQUEDA LIKE
-            else if(Data.Instancia.Arboles.ContainsKey(nombreTabla) == false)
+            else if (Data.Instancia.Arboles.ContainsKey(nombreTabla) == false)
             {
                 ExisteError = true;
                 ViewBag.MensajeError = nombreTabla + ": No existe tabla, se realizaron las intrucciones de los bloques anteriores a esta excepcion";
