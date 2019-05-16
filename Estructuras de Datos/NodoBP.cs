@@ -15,7 +15,7 @@ namespace Estructuras_de_Datos
 
         public NodoBP<T> hermano { get; set; }
 
-        public List<T> values { get; set; }
+        public List<Registro> values { get; set; }
 
         public int id { get; set; }
         public int max { get; set; }
@@ -26,7 +26,7 @@ namespace Estructuras_de_Datos
             padre = null;
             hermano = null;
             hijos = new List<NodoBP<T>>();
-            values = new List<T>();
+            values = new List<Registro>();
             id = 0;
             max = 0;
             min = 0;

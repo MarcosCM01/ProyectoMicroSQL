@@ -670,6 +670,7 @@ namespace ProyectoMicroSQL.Controllers
                 }
                 return 1;
             }
+            //PARA LA BUSQUEDA LIKE
             else if(Data.Instancia.Arboles.ContainsKey(nombreTabla) == false)
             {
                 ExisteError = true;

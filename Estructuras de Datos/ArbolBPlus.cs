@@ -22,7 +22,7 @@ namespace Estructuras_de_Datos
         #endregion
 
         #region Insercion
-        public void InsertarNodo(T value, int grado)
+        public void InsertarNodo(Registro value, int grado)
         {
             if (root == null)
             {
@@ -34,7 +34,7 @@ namespace Estructuras_de_Datos
             else { Insertar2(root, value); }
 
         }
-        public void Insertar2(NodoBP<T> nodo, T value)
+        public void Insertar2(NodoBP<T> nodo, Registro value)
         {
             if (EsHoja(nodo) == true) //Es hoja
             {
@@ -77,12 +77,12 @@ namespace Estructuras_de_Datos
                 return false;
             }
         }
-        public void AgregarYOrdenarN(NodoBP<T> node, T value)
+        public void AgregarYOrdenarN(NodoBP<T> node, Registro value)
         {
             node.values.Add(value);
             node.values.Sort((x, y) => x.CompareTo(y));
         }
-        public int HijoAEntrar(NodoBP<T> node, T valor)
+        public int HijoAEntrar(NodoBP<T> node, Registro valor)
         {
             if (node.values.Count == 1)
             {
@@ -175,7 +175,7 @@ namespace Estructuras_de_Datos
             {
                 Asignacion(node, izq);
                 Asignacion(izq, der);
-                T value = node.values[node.min];
+                Registro value = node.values[node.min];
                 NuevosHijos(node, izq, 0, node.min);
                 NuevosHijos(node, der, node.min + 1, node.max + 1);
                 der.values.RemoveAt(0);//Para que no se triplique el valor que sube como raiz
@@ -229,13 +229,13 @@ namespace Estructuras_de_Datos
 
         #region Busqueda
         //INDICAR EN EL CONTROLADOR QUE SI ES FALSO, INDIQUE QUE NO SE ENCONTRO EL DATO
-        public void busquedaEnRaiz(T valor)
+        public void busquedaEnRaiz(Registro valor)
         {
             busquedaEnHojas(valor, root);
 
         }
-        static T val;
-        public object busquedaEnHojas(T value, NodoBP<T> node)
+        static Registro val;
+        public object busquedaEnHojas(Registro value, NodoBP<T> node)
         {
             bool encontrado = false;
             foreach (var item in node.values)
@@ -273,11 +273,11 @@ namespace Estructuras_de_Datos
 
         #region Eliminacion
         //EN EL CONTROLADOR, MEJOR MANDAR A LLAMAR SI ESTA.
-        public void Eliminar(T value)
+        public void Eliminar(Registro value)
         {
             EliminarValor(value, root);
         }
-        public void EliminarValor(T valor, NodoBP<T> nodo)
+        public void EliminarValor(Registro valor, NodoBP<T> nodo)
         {
             NodoBP<T> aux = new NodoBP<T>();
             aux = BusquedaDelNodo(valor, nodo);//nodo donde se encuentre el valor a eliminar
@@ -319,7 +319,7 @@ namespace Estructuras_de_Datos
         #endregion
 
         #region metodosAuxEliminacion
-        public NodoBP<T> BusquedaDelNodo(T value, NodoBP<T> nodoIndicado)
+        public NodoBP<T> BusquedaDelNodo(Registro value, NodoBP<T> nodoIndicado)
         {
             bool encontrado = false;
             foreach (var item in nodoIndicado.values)
@@ -345,7 +345,7 @@ namespace Estructuras_de_Datos
         public void PrestarValores(NodoBP<T> nodo)
         {
             nodo.values.Add(nodo.hermano.values[0]);
-            T val = nodo.hermano.values[0];
+            Registro val = nodo.hermano.values[0];
             foreach (var item in nodo.padre.values)
             {
                 if (item.CompareTo(val) == 0)
@@ -390,6 +390,10 @@ namespace Estructuras_de_Datos
             nodo.padre.values.Remove(nodo.padre.values[nodo.padre.values.Count - 1]);
             nodo.values.Clear();
             nodo.padre.hijos.Remove(nodo);
+            if (izquierdo.padre.values.Count == 0) //En caso de que la raiz se quede sin valores
+            {
+                root = izquierdo;
+            }
             izquierdo.hermano = null;
         }
         #endregion
